@@ -45,4 +45,15 @@ The site is a static export (`output: "export"` in `next.config.ts`) served by a
 (`wrangler.jsonc`). Security headers and caching rules are in `public/_headers`. Server-only Next.js features
 (server actions, route handlers, rewrites, image optimization) are unavailable in this mode.
 
-Business documents (PDF, Word, images, `business.txt`) are kept out of the repository by `.gitignore`.
+Pushes to `main` deploy automatically: the **Deploy** workflow runs after **CI** passes and publishes with Wrangler.
+It needs two repository secrets:
+
+| Secret | Value |
+| --- | --- |
+| `CLOUDFLARE_ACCOUNT_ID` | The Cloudflare account ID |
+| `CLOUDFLARE_API_TOKEN` | Account API token `github-actions-stratosopx-deploy` (expires **October 12, 2027**; create a new one and update the secret before then) |
+
+Cloudflare's own Git builds are disconnected so each push deploys once.
+
+Business documents (PDF, Word, images, `business.txt`) are kept out of the repository by `.gitignore`, and CI fails if one
+is committed.
