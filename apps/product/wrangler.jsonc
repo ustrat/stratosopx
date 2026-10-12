@@ -41,7 +41,7 @@
     // Claude model for order extraction. The API key is a secret: ANTHROPIC_API_KEY.
     "EXTRACTION_MODEL": "claude-opus-5-5",
     // Automatic intake routing: the stratosopx.com zone and the Worker that receives mail.
-    "CF_ZONE_ID": "",
+    "CF_ZONE_ID": "cb2aaab21cacd11124f91660fe705776",
     "INTAKE_WORKER": "stratosopx-app",
     // "access": identity from Cloudflare Access. "dev": local only, see .dev.vars.
     "AUTH_MODE": "access",
