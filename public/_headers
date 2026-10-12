@@ -5,6 +5,9 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
 
+/dashboard
+  X-Robots-Tag: noindex, nofollow
+
 /dashboard/*
   X-Robots-Tag: noindex, nofollow
 
