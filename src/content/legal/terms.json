@@ -1,0 +1,869 @@
+{
+  "title": "StratosOpX Terms of Service",
+  "preamble": [
+    "Oct 11, 2026 · @Camir",
+    "Draft for counsel review. Bracketed items such as [StratosOpX, LLC] and [address] are placeholders to confirm before publication. This draft is not legal advice."
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "text": "1. Agreement, eligibility and definitions"
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "These Terms of Service (\"Terms\") govern access to and use of the StratosOpX website at stratosopx.com, the StratosOpX software platform, and related AI agents and support (together, the \"Services\"), provided by [StratosOpX, LLC], a Georgia [limited liability company] (\"StratosOpX,\" \"we,\" \"us\"). By creating an account, signing an Order Form, or using the Services, you agree to these Terms.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "The Services are offered only to businesses. You must be at least 18 and have authority to bind the organization you represent (\"Customer\" or \"you\"). The Services are not intended for personal, family or household use.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "If Customer has signed a Master Services Agreement (\"MSA\") with StratosOpX, the MSA controls over these Terms where they conflict. Otherwise, documents apply in this order: (1) a signed Order Form or Statement of Work (\"SOW\"), (2) the AI Execution Schedule, (3) the Data Processing Addendum (\"DPA\"), (4) these Terms, (5) the Acceptable Use Policy and published documentation.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "subheading",
+      "text": "Key definitions"
+    },
+    {
+      "type": "list",
+      "items": [
+        [
+          {
+            "text": "Agent",
+            "bold": true
+          },
+          {
+            "text": " — a StratosOpX AI software agent, including the Order Reconciliation Agent and the Bid Qualification Agent.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Customer Data",
+            "bold": true
+          },
+          {
+            "text": " — data, documents and content Customer or its users submit to the Services, including purchase orders, RFP packages, ERP records, capability statements and pricing files.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Customer Systems",
+            "bold": true
+          },
+          {
+            "text": " — Customer's ERP (such as NetSuite, Sage, SAP Business One or Acumatica), email, file storage and other systems Customer connects to the Services.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Output",
+            "bold": true
+          },
+          {
+            "text": " — summaries, extracted fields, validations, checklists, recommendations, drafts and other results the Services generate.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Authorized Action",
+            "bold": true
+          },
+          {
+            "text": " — an action an Agent may take in Customer Systems as listed in Customer's signed AI Execution Schedule.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Order Form",
+            "bold": true
+          },
+          {
+            "text": " — the ordering document stating the plan, fees, included volume and term.",
+            "bold": false
+          }
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "2. The Services and how Agents act"
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "StratosOpX provides subscription software and related professional services that automate back-office work for manufacturers and wholesale distributors. Plan features, included volumes and support levels are described in the Order Form and the published pricing page.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "items": [
+        [
+          {
+            "text": "Order Reconciliation Agent",
+            "bold": true
+          },
+          {
+            "text": " — extracts order data from emailed Excel, PDF and plain-text purchase orders; matches customers and items; checks pricing tiers and inventory; flags change orders; and prepares or posts sales orders to Customer's ERP.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Bid Qualification Agent",
+            "bold": true
+          },
+          {
+            "text": " — analyzes RFP and bid packages against Customer's capabilities, certifications and past performance; flags potential dealbreakers; and drafts compliance checklists and go/no-go summaries.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Professional services",
+            "bold": true
+          },
+          {
+            "text": " — readiness assessments, implementation, optimization retainers and advisory work, each governed by a SOW with defined scope, deliverables, acceptance criteria and change-order process.",
+            "bold": false
+          }
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Automation modes.",
+          "bold": true
+        },
+        {
+          "text": " Every Agent starts in ",
+          "bold": false
+        },
+        {
+          "text": "Assist mode",
+          "bold": true
+        },
+        {
+          "text": ", in which a Customer user reviews and approves each action before it reaches Customer Systems. ",
+          "bold": false
+        },
+        {
+          "text": "Auto-post",
+          "bold": true
+        },
+        {
+          "text": " (rule-based or configurable automatic posting) is available only on eligible plans and only after all of the following are true for that Customer:",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "items": [
+        [
+          {
+            "text": "Customer has signed an AI Execution Schedule naming the systems, environments and action categories permitted.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "StratosOpX has tested the authorization, approval, logging and recovery controls for that configuration.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Customer has designated approvers and an escalation contact.",
+            "bold": false
+          }
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Agents act only through StratosOpX-controlled tools that enforce the AI Execution Schedule. Actions such as bulk deletion, disabling security settings, privilege escalation and unapproved fund or data transfers are prohibited by default. Either party may suspend Auto-post at any time, and Agents return to Assist mode.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Changes to the Services.",
+          "bold": true
+        },
+        {
+          "text": " We may update the Services, including models and subprocessors, provided we do not materially reduce the core functionality of a paid plan during its current term. We will give at least 30 days' notice of material adverse changes.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "3. Customer responsibilities and acceptable use"
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Customer is responsible for:",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "items": [
+        [
+          {
+            "text": "Keeping account credentials confidential, enabling multi-factor authentication, and promptly removing access for departed users.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Granting only the system access and credentials needed for the purchased Services, and confirming it has the right to grant that access.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Having all rights, notices and consents needed to submit Customer Data, including data about its own customers, suppliers and employees.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Reviewing Output before relying on it, including approving orders in Assist mode and verifying bid compliance before submission.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Maintaining accurate master data (customers, items, price lists, inventory) in Customer Systems.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Telling StratosOpX promptly about errors, suspected unauthorized access, or changes to Customer Systems that may affect the Services.",
+            "bold": false
+          }
+        ]
+      ]
+    },
+    {
+      "type": "subheading",
+      "text": "Customer may not:"
+    },
+    {
+      "type": "list",
+      "items": [
+        [
+          {
+            "text": "Use the Services to violate law, infringe others' rights, or submit data Customer has no right to share.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Submit protected health information, payment card numbers, or government identification numbers unless a signed addendum expressly permits it.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Attempt to bypass approval workflows, rate limits, tenant isolation, or the AI Execution Schedule, or direct an Agent to act outside it.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Probe, scan or test the Services' security without written permission, or introduce malicious code or prompt-injection content.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Reverse engineer, copy, resell or sublicense the Services, or use them to build a competing product.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Use Output as the sole basis for decisions with legal or similarly significant effects on individuals.",
+            "bold": false
+          }
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "We may suspend access, in whole or part, if Customer's use poses a security risk, threatens Customer Systems or other customers, or materially breaches these Terms. We will give notice and restore access promptly once the issue is resolved, unless prohibited by law.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. Fees, billing and renewal"
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Fees, included volumes and overage rates are stated in the Order Form. Unless the Order Form says otherwise:",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "header": [
+        "Item",
+        "Billing terms"
+      ],
+      "rows": [
+        [
+          "Annual subscriptions",
+          "Billed annually or quarterly in advance"
+        ],
+        [
+          "Monthly subscriptions",
+          "Billed monthly in advance at the published monthly rate; cancel with 30 days' notice"
+        ],
+        [
+          "Overages",
+          "Billed monthly in arrears at the plan's per-order or per-analysis rate"
+        ],
+        [
+          "Pay-per-bid analyses",
+          "Billed at purchase"
+        ],
+        [
+          "Fixed-fee implementation",
+          "50% at signature, 50% at go-live acceptance"
+        ],
+        [
+          "Hourly advisory",
+          "Billed monthly in arrears"
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Billable units.",
+          "bold": true
+        },
+        {
+          "text": " For the Order Reconciliation Agent, one order is one customer purchase order converted to one ERP sales order, regardless of line count. A change order to an existing PO counts as one order. Duplicate or rejected documents are not billed. For the Bid Qualification Agent, one analysis covers one RFP package up to the page limit in the plan.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Renewal.",
+          "bold": true
+        },
+        {
+          "text": " Subscriptions renew automatically for the same term unless either party gives written notice at least 30 days before the renewal date. Renewal pricing may increase by no more than the uplift stated in the Order Form (standard: 5% per year).",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Payment.",
+          "bold": true
+        },
+        {
+          "text": " Invoices are due within 30 days. Late amounts may accrue interest at 1.5% per month or the maximum legal rate, whichever is lower. We may suspend Services for invoices more than 15 days overdue after written notice. Fees exclude taxes; Customer pays applicable sales, use and similar taxes, other than taxes on our income.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "No refunds.",
+          "bold": true
+        },
+        {
+          "text": " Fees are non-refundable except as stated in these Terms, the SLA (service credits), or where required by law. Unused included volume does not carry forward except where the plan states a rollover.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. Data, intellectual property and AI Output"
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Customer Data.",
+          "bold": true
+        },
+        {
+          "text": " Customer owns its Customer Data. Customer grants StratosOpX a limited license to host, process and display Customer Data only to provide, secure, support and improve the Services for Customer, as described in the DPA and Privacy Policy.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "No training on Customer Data without permission.",
+          "bold": true
+        },
+        {
+          "text": " We do not use Customer Data to train or fine-tune general-purpose AI models offered to other customers. We may use de-identified, aggregated usage metrics (for example, touchless rates and processing times) to operate and improve the Services and to benchmark performance, provided they do not identify Customer or any individual.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "StratosOpX IP.",
+          "bold": true
+        },
+        {
+          "text": " StratosOpX and its licensors own the Services, Agents, software, templates, models, prompts, workflows and documentation, including improvements and pre-existing IP used in professional services. Customer receives a non-exclusive, non-transferable right to use the Services during the subscription term for its internal business purposes.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Custom deliverables.",
+          "bold": true
+        },
+        {
+          "text": " Ownership of custom deliverables created under a SOW (such as customer-specific mappings, validation rules and reports) is stated in that SOW. If the SOW is silent, Customer owns the custom deliverable and StratosOpX keeps a license to reuse general know-how and non-Customer-specific components.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Output.",
+          "bold": true
+        },
+        {
+          "text": " As between the parties, Customer owns Output generated from Customer Data. Output is produced by AI and may be incomplete or inaccurate. Customer should validate Output in proportion to its risk before relying on it, including before submitting a bid or posting an order outside Assist mode. This does not excuse StratosOpX from its own obligations under these Terms.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Feedback.",
+          "bold": true
+        },
+        {
+          "text": " If Customer offers suggestions, StratosOpX may use them without obligation.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Confidentiality.",
+          "bold": true
+        },
+        {
+          "text": " Each party will protect the other's non-public business, technical and financial information with at least reasonable care, use it only to perform under these Terms, and disclose it only to personnel and contractors who need to know and are bound by similar duties. These duties do not cover information that is public, already known, independently developed, or lawfully received from a third party. A party may disclose information when legally required, after giving notice where allowed.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. Warranties, disclaimers, liability and indemnity"
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Our commitments.",
+          "bold": true
+        },
+        {
+          "text": " StratosOpX warrants that (a) the Services will perform materially as described in the documentation, (b) professional services will be performed in a professional and workmanlike manner, and (c) we will maintain reasonable administrative, technical and physical safeguards for Customer Data. Customer's remedy for breach of (a) or (b) is for us to correct the issue or, if we cannot within 30 days, to terminate the affected Service and receive a pro-rata refund of prepaid unused fees.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Disclaimers.",
+          "bold": true
+        },
+        {
+          "text": " Except as stated above, the Services and Output are provided \"as is.\" To the extent allowed by law, StratosOpX disclaims implied warranties of merchantability, fitness for a particular purpose and non-infringement. We do not guarantee uninterrupted operation, error-free Output, a specific touchless rate, cost savings, or that any bid will be won. Savings estimates and ROI models are estimates based on Customer-provided data. Availability commitments and service credits, if any, are stated only in the SLA.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Limitation of liability.",
+          "bold": true
+        },
+        {
+          "text": " To the extent allowed by law:",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "items": [
+        [
+          {
+            "text": "Neither party is liable for indirect, incidental, special, consequential or punitive damages, or for lost profits, revenue or goodwill, even if advised of the possibility.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Each party's total liability arising from these Terms is limited to the fees Customer paid or owes for the Services in the 12 months before the event giving rise to the claim [minimum: $___].",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "For breaches of data-protection or security obligations, each party's total liability is limited to [2x / 3x] the amount in item 2 [or $___], unless the Order Form states otherwise.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "These limits do not apply to Customer's payment obligations, either party's fraud, gross negligence or willful misconduct, or indemnity obligations for third-party IP claims.",
+            "bold": false
+          }
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "StratosOpX indemnity.",
+          "bold": true
+        },
+        {
+          "text": " We will defend Customer against third-party claims alleging that the Services, as provided by us, infringe that party's U.S. intellectual property rights, and pay resulting damages and costs finally awarded or agreed in settlement. This does not apply to claims caused by Customer Data, modifications not made by us, or combinations with items we did not provide. If a claim arises, we may modify the Services, obtain a license, or terminate and refund prepaid unused fees.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Customer indemnity.",
+          "bold": true
+        },
+        {
+          "text": " Customer will defend StratosOpX against third-party claims arising from Customer Data, Customer's breach of the Acceptable Use terms, or Customer's instructions or approvals for actions in Customer Systems, and pay resulting damages and costs finally awarded or agreed in settlement.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Process.",
+          "bold": true
+        },
+        {
+          "text": " The indemnified party must give prompt notice, allow the indemnifying party to control the defense and settlement, and reasonably cooperate. No settlement may impose obligations on the indemnified party without its consent.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "7. Term, termination and exit"
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "These Terms apply while Customer has an account or active Order Form. Each subscription runs for the term in its Order Form and renews as described in Section 4.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "items": [
+        [
+          {
+            "text": "For cause.",
+            "bold": true
+          },
+          {
+            "text": " Either party may terminate an Order Form if the other materially breaches and does not cure within 30 days of written notice (10 days for non-payment).",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Insolvency.",
+            "bold": true
+          },
+          {
+            "text": " Either party may terminate if the other becomes insolvent, makes an assignment for creditors, or enters bankruptcy proceedings not dismissed within 60 days.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Unsafe actions.",
+            "bold": true
+          },
+          {
+            "text": " Either party may immediately suspend Agent execution privileges if it reasonably believes an Agent action threatens Customer Systems, data integrity or security. Suspension of execution does not by itself terminate the subscription.",
+            "bold": false
+          }
+        ]
+      ]
+    },
+    {
+      "type": "subheading",
+      "text": "On termination or expiration:"
+    },
+    {
+      "type": "list",
+      "items": [
+        [
+          {
+            "text": "Customer's right to use the Services ends, and unpaid fees for the elapsed period become due.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "We revoke Agent credentials and integrations to Customer Systems within 2 business days. Customer should also rotate any credentials it shared.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "For 30 days, Customer may export Customer Data in a standard format (such as CSV, JSON or Excel).",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "After that period, we delete Customer Data from active systems within 30 days and from backups on their normal rotation, unless law requires longer retention. We will confirm deletion in writing on request.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Transition assistance beyond self-service export is available at our then-current advisory rates.",
+            "bold": false
+          }
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Sections that by their nature should survive (including fees owed, confidentiality, IP, disclaimers, limitation of liability, indemnity and governing law) survive termination.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "8. Governing law, disputes and general terms"
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Governing law and venue.",
+          "bold": true
+        },
+        {
+          "text": " These Terms are governed by the laws of the State of Georgia, without regard to conflict-of-law rules. The parties submit to the exclusive jurisdiction of the state and federal courts located in [Gwinnett County / Fulton County], Georgia. Before filing suit, the parties will try in good faith to resolve a dispute through executive discussion for 30 days. Either party may seek injunctive relief at any time to protect its confidential information or IP.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "subheading",
+      "text": "General."
+    },
+    {
+      "type": "list",
+      "items": [
+        [
+          {
+            "text": "Independent contractors.",
+            "bold": true
+          },
+          {
+            "text": " The parties are independent contractors; nothing creates a partnership, agency or employment relationship.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Assignment.",
+            "bold": true
+          },
+          {
+            "text": " Neither party may assign these Terms without consent, except to a successor in a merger, acquisition or sale of substantially all relevant assets, with notice.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Subcontractors.",
+            "bold": true
+          },
+          {
+            "text": " We may use subcontractors and subprocessors and remain responsible for their performance.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Force majeure.",
+            "bold": true
+          },
+          {
+            "text": " Neither party is liable for delays caused by events beyond its reasonable control, other than payment obligations.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Publicity.",
+            "bold": true
+          },
+          {
+            "text": " We may name Customer as a customer only with Customer's written consent, except as agreed in a design-partner arrangement.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Export and sanctions.",
+            "bold": true
+          },
+          {
+            "text": " Each party will comply with applicable U.S. export control and sanctions laws.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Notices.",
+            "bold": true
+          },
+          {
+            "text": " Legal notices must be in writing and sent to the addresses in the Order Form, or for StratosOpX to legal@stratosopx.com with a copy to [address].",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Changes to these Terms.",
+            "bold": true
+          },
+          {
+            "text": " We may update these Terms by posting a new version with a new effective date. Material changes take effect at Customer's next renewal, or 30 days after notice, whichever is later. Signed Order Forms and MSAs are not changed without mutual written agreement.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Entire agreement.",
+            "bold": true
+          },
+          {
+            "text": " These Terms, with the documents listed in Section 1, are the entire agreement on their subject. If any provision is unenforceable, the rest remains in effect. A waiver must be in writing.",
+            "bold": false
+          }
+        ]
+      ]
+    },
+    {
+      "type": "subheading",
+      "text": "Contact"
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "[StratosOpX, LLC]\n[Street address], [City], Georgia [ZIP]\nlegal@stratosopx.com · stratosopx.com",
+          "bold": false
+        }
+      ]
+    }
+  ],
+  "source": "StratosOpX Terms of Service.docx"
+}

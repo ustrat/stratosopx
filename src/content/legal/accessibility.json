@@ -1,0 +1,327 @@
+{
+  "title": "StratosOpX Accessibility Statement",
+  "preamble": [
+    "Oct 11, 2026 · @Camir",
+    "StratosOpX aims for its website and platform to meet WCAG 2.2 Level AA. Status: partially conformant, pending an independent audit. Bracketed items are placeholders to update once testing is complete."
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "text": "1. Our commitment and scope"
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "[StratosOpX, LLC] is committed to making its digital products usable by everyone, including people who use screen readers, screen magnifiers, voice control, keyboard-only navigation or other assistive technologies.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "This statement covers:",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "items": [
+        [
+          {
+            "text": "The public website at stratosopx.com, including the pricing page and ROI calculator.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "The StratosOpX web platform used by customers, including order review and approval screens, bid analysis results, dashboards and admin settings.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Customer-facing documents we produce, such as go/no-go summaries, compliance checklists and exported reports.",
+            "bold": false
+          }
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Accessibility is part of how we design, build and test, not a one-time project.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "2. Conformance target and status"
+    },
+    {
+      "type": "table",
+      "header": [
+        "Item",
+        "Detail"
+      ],
+      "rows": [
+        [
+          "Standard",
+          "Web Content Accessibility Guidelines (WCAG) 2.2, Level AA"
+        ],
+        [
+          "Related frameworks",
+          "Section 508 of the Rehabilitation Act (for public-sector customers); Americans with Disabilities Act (ADA)"
+        ],
+        [
+          "Current status",
+          "Partially conformant: some content does not yet fully meet the standard"
+        ],
+        [
+          "Assessment method",
+          "Internal review with automated tools and manual keyboard and screen-reader testing; independent third-party audit planned for [Q_ 2027]"
+        ],
+        [
+          "VPAT / ACR",
+          "Accessibility Conformance Report (VPAT 2.5, WCAG and 508 editions) available on request after the audit [target date]"
+        ],
+        [
+          "Last reviewed",
+          "[October 2026]"
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "We will update this statement after each audit and at least once a year.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "3. Measures we take and accessibility features"
+    },
+    {
+      "type": "subheading",
+      "text": "How we work"
+    },
+    {
+      "type": "list",
+      "items": [
+        [
+          {
+            "text": "Accessibility requirements are included in design specs and acceptance criteria for new features.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Every release runs automated accessibility checks; key workflows get manual keyboard and screen-reader testing (NVDA and JAWS on Windows, VoiceOver on macOS and iOS).",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Team members receive accessibility training, and a named owner tracks issues to resolution.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "We consider accessibility when selecting third-party components and vendors.",
+            "bold": false
+          }
+        ]
+      ]
+    },
+    {
+      "type": "subheading",
+      "text": "Features in the website and platform"
+    },
+    {
+      "type": "list",
+      "items": [
+        [
+          {
+            "text": "Full keyboard navigation with visible focus indicators and skip-to-content links.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Semantic headings, landmarks and labeled form fields for screen readers.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Text contrast of at least 4.5:1, and status (approved, flagged, rejected) shown with text and icons, not color alone.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Layouts that reflow at 400% zoom and support browser text resizing.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Order-review and change-order diff screens that announce changes to assistive technology.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Data tables with proper header markup; charts paired with a text or table alternative.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "No time limits on approval tasks, or the ability to extend them; session-timeout warnings with an option to continue.",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Exported checklists and reports in accessible, tagged formats (Word, Excel, tagged PDF).",
+            "bold": false
+          }
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. Known limitations and third-party content"
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "We are working to fix the following. [Replace with audit findings once available.]",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "header": [
+        "Area",
+        "Limitation",
+        "Workaround",
+        "Target fix"
+      ],
+      "rows": [
+        [
+          "Source documents",
+          "Purchase orders and RFP packages that customers upload (scanned PDFs, Excel files) are third-party content and may not be accessible",
+          "Our extracted, structured view of each document is designed to be accessible; ask support for help",
+          "Ongoing"
+        ],
+        [
+          "ROI calculator",
+          "Some interactive sliders may not announce values clearly to all screen readers",
+          "Numeric input fields are provided beside each slider",
+          "[Date]"
+        ],
+        [
+          "Dashboards",
+          "Some complex charts may lack a full text alternative",
+          "Export the underlying data to Excel",
+          "[Date]"
+        ],
+        [
+          "Embedded tools",
+          "Third-party scheduling, chat and payment widgets follow their vendors' accessibility practices",
+          "Contact us by email or phone instead",
+          "Vendor-dependent"
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "We do not control the accessibility of customers' ERP systems or other connected third-party products.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. Feedback, alternative formats and contact"
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "If you have trouble using any part of our website or platform, or need content in another format (large print, accessible PDF, Word, plain text, or a walkthrough by phone), please contact us:",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "items": [
+        [
+          {
+            "text": "Email:",
+            "bold": true
+          },
+          {
+            "text": " accessibility@stratosopx.com",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Phone:",
+            "bold": true
+          },
+          {
+            "text": " [(xxx) xxx-xxxx], Monday to Friday, 9 a.m. to 5 p.m. Eastern",
+            "bold": false
+          }
+        ],
+        [
+          {
+            "text": "Mail:",
+            "bold": true
+          },
+          {
+            "text": " [StratosOpX, LLC], Attn: Accessibility, [Street address], [City], Georgia [ZIP]",
+            "bold": false
+          }
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Please tell us the page or feature, what you were trying to do, and the assistive technology you use, if any. We aim to acknowledge feedback within 2 business days and to provide a fix, workaround or alternative format within 10 business days. Requests are free of charge.",
+          "bold": false
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "segments": [
+        {
+          "text": "Customers in procurement can request our Accessibility Conformance Report (VPAT) through the same address.",
+          "bold": false
+        }
+      ]
+    }
+  ],
+  "source": "StratosOpX Accessibility Statement.docx"
+}

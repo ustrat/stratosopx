@@ -9,6 +9,13 @@ const navLinks = [
   { href: "/#company", label: "Company" },
 ];
 
+const legalLinks = [
+  { href: "/terms", label: "Terms of Service" },
+  { href: "/privacy", label: "Privacy Policy" },
+  { href: "/accessibility", label: "Accessibility" },
+  { href: "/integrations/policy", label: "Ingestion policy" },
+];
+
 export function SiteHeader() {
   return (
     <header className="site-header">
@@ -46,6 +53,13 @@ export function SiteFooter() {
         </div>
         <span>© 2026 StratosOpx. All rights reserved.</span>
       </div>
+      <nav aria-label="Legal" className="container site-footer-legal">
+        {legalLinks.map((l) => (
+          <Link key={l.href} href={l.href}>
+            {l.label}
+          </Link>
+        ))}
+      </nav>
     </footer>
   );
 }

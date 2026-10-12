@@ -15,7 +15,7 @@ export default function PricingPage() {
     <>
       <SiteHeader />
 
-      <main className="pricing">
+      <main id="main" className="pricing">
         <section className="container pricing-hero">
           <span className="eyebrow">PRICING</span>
           <h1>Priced on outcomes, not seats.</h1>

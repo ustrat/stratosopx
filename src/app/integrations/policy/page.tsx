@@ -11,7 +11,7 @@ export default function IngestionPolicyPage() {
   return (
     <>
       <SiteHeader />
-      <main className="pricing">
+      <main id="main" className="pricing">
         <section className="container pricing-hero">
           <span className="eyebrow">POLICY</span>
           <h1>Document integration &amp; ingestion policy</h1>

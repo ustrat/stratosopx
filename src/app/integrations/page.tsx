@@ -13,7 +13,7 @@ export default function IntegrationsPage() {
   return (
     <>
       <SiteHeader />
-      <main className="pricing">
+      <main id="main" className="pricing">
         <section className="container pricing-hero">
           <span className="eyebrow">INTEGRATIONS</span>
           <h1>Your ERP stays the system of record.</h1>

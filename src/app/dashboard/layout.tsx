@@ -67,7 +67,9 @@ export default function DashboardLayout({ children }: LayoutProps<"/dashboard">)
             </div>
           </div>
 
-          {children}
+          <main id="main" className="app-content">
+            {children}
+          </main>
         </div>
       </div>
     </ExecutionProvider>

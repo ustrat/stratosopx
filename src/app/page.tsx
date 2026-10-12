@@ -38,7 +38,7 @@ export default function Home() {
     <>
       <SiteHeader />
 
-      <main>
+      <main id="main">
         <section className="hero">
           <DotWave className="hero-wave" />
           <div className="container hero-inner">
