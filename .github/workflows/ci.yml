@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  no-documents:
+    name: No business documents
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Fail if PDFs, Office files, images or business.txt are tracked
+        run: |
+          found=$(git ls-files | grep -i -E '\.(pdf|docx?|xlsx?|pptx?|png|jpe?g)$|(^|/)business\.txt$' | grep -v '^public/' || true)
+          if [ -n "$found" ]; then
+            echo "::error::Business documents must not be committed:"
+            echo "$found"
+            exit 1
+          fi
+          echo "No documents tracked."
+
+  build:
+    name: Lint and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - name: Upload static site
+        uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: out
+          retention-days: 7
