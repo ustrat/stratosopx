@@ -30,7 +30,7 @@ jobs:
           echo "No documents tracked."
 
   build:
-    name: Lint and build
+    name: Lint, typecheck and build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -40,10 +40,13 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint
+      - run: npm run typecheck
       - run: npm run build
-      - name: Upload static site
+      - name: Upload builds
         uses: actions/upload-artifact@v4
         with:
-          name: site
-          path: out
+          name: builds
+          path: |
+            apps/web/out
+            apps/product/dist
           retention-days: 7

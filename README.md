@@ -1,59 +1,62 @@
 # StratosOpx
 
-Marketing site and Order & Bid Command Center for StratosOpx.
+Monorepo for the StratosOpx website and product.
 
-## Run
+| Path | What | Deploys to |
+| --- | --- | --- |
+| `apps/web` | Marketing site (Next.js static export) | `stratosopx.com` |
+| `apps/product` | The product: React SPA + Hono API on one Cloudflare Worker, D1 database | `app.stratosopx.com` |
+| `packages/core` | Shared logic: order validation, ERP payloads, execution controls, ingestion policy, pricing, ERP catalog | — |
+
+## Commands (from the repo root)
 
 ```bash
 npm install
-npm run dev       # http://localhost:3000
-npm run build     # static export to ./out
 npm run lint
-npm run preview   # build, then serve ./out locally with Wrangler
-npm run deploy    # build, then deploy to Cloudflare Workers
+npm run typecheck
+npm run build                         # all workspaces
+npm run dev:web                       # website at http://localhost:3000
+npm run dev -w @stratosopx/product    # product at http://localhost:5173
 ```
 
-## Routes
+## Product: local development
 
-| Route | What it is |
-| --- | --- |
-| `/` | Marketing home: hero, brand concept, the two agents, demo CTA |
-| `/pricing` | Published tiers for both agents, ROI calculator, bundles, services |
-| `/integrations` | ERP catalog grouped by integration pattern, with filters |
-| `/integrations/policy` | Document integration & ingestion policy (draft) |
-| `/dashboard` | Command Center overview: KPIs, routing map, review queue, plan usage, execution controls |
-| `/dashboard/review` | Review queue list |
-| `/dashboard/review/<id>` | Human-in-the-loop review: PO / change-order lines with live exceptions and payload-bound approval, or RFP compliance matrix with Go / No-Go |
-| `/dashboard/erp-sync` | ERP connections and inbound document screening |
-| `/dashboard/settings` | Automation mode, permission matrix, launch acceptance, emergency stop |
-| `/dashboard/<section>` | Placeholders for Orders, Change orders, Bids & RFPs, Agents |
+```bash
+cd apps/product
+cp .dev.vars.example .dev.vars                  # AUTH_MODE=dev, set DEV_USER_EMAIL
+npm run db:migrate:local
+ADMIN_EMAIL=<same email> node scripts/seed.mjs --local
+npm run dev
+```
 
-## Source layout
+`AUTH_MODE=dev` only works on `localhost`. In production, Cloudflare Access sits in front of `app.stratosopx.com`;
+the Worker verifies the Access JWT (`ACCESS_TEAM_DOMAIN`, `ACCESS_AUD` in `wrangler.jsonc`) and only lets in users
+who have a row in the `users` table.
 
-- `src/app/globals.css` — design tokens and all styles
-- `src/components/` — `Logo`, `Icon`, `DotWave`, `site/`, `dashboard/`, `review/`, `pricing/`, `integrations/`
-- `src/lib/pricing.ts` — list prices and tier math
-- `src/lib/controls.ts` — action-risk tiers, permission matrix, launch criteria, payload fingerprint
-- `src/lib/erp-catalog.ts` — ERP systems and integration groups
-- `src/lib/ingestion-policy.ts` — ingestion limits, `screenDocument()` and the policy text (one source for both)
-- `src/lib/review.ts` — order validation (`validateOrder`) and ERP payload builder (`erpPayload`)
-- `src/lib/data.ts`, `src/lib/plan.ts` — **sample data**; replace with real API calls
+### How an order is approved
+
+1. The browser and the Worker run the same checks (`validateOrder`) and payload builder (`erpPayload`) from `packages/core`.
+2. The approver resolves or accepts every exception; blocking ones can only be fixed.
+3. The Worker recomputes everything, checks the approver's role and the emergency stop, and verifies the payload
+   fingerprint matches what the approver saw.
+4. The write goes through the ERP adapter with an idempotency key and is read back to verify. Every step is in `audit_log`.
+
+The ERP is currently a mock adapter (`apps/product/worker/erp.ts`) that stores NetSuite-format payloads until a design
+partner provides sandbox access.
 
 ## Deployment
 
-The site is a static export (`output: "export"` in `next.config.ts`) served by an assets-only Cloudflare Worker
-(`wrangler.jsonc`). Security headers and caching rules are in `public/_headers`. Server-only Next.js features
-(server actions, route handlers, rewrites, image optimization) are unavailable in this mode.
-
-Pushes to `main` deploy automatically: the **Deploy** workflow runs after **CI** passes and publishes with Wrangler.
-It needs two repository secrets:
+Pushes to `main` deploy automatically: **Deploy** runs after **CI** passes. Repository secrets:
 
 | Secret | Value |
 | --- | --- |
 | `CLOUDFLARE_ACCOUNT_ID` | The Cloudflare account ID |
-| `CLOUDFLARE_API_TOKEN` | Account API token `github-actions-stratosopx-deploy` (expires **October 12, 2027**; create a new one and update the secret before then) |
+| `CLOUDFLARE_API_TOKEN` | Account API token `github-actions-stratosopx-deploy` (expires **October 12, 2027**; create a new one and update the secret before then). Needs Workers Scripts, Workers Routes and **D1 Edit**. |
 
-Cloudflare's own Git builds are disconnected so each push deploys once.
+The product deploy is skipped until `apps/product/wrangler.jsonc` has the real D1 database ID. Each product deploy applies
+pending D1 migrations first.
+
+Legal pages: `python -I apps/web/scripts/legal-docx-to-json.py` regenerates them from the .docx drafts in the repo root.
 
 Business documents (PDF, Word, images, `business.txt`) are kept out of the repository by `.gitignore`, and CI fails if one
 is committed.

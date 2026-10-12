@@ -2,7 +2,10 @@ name: Deploy
 
 # Deploys main to Cloudflare Workers after CI passes.
 # Needs repository secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID;
-# without them the deploy step is skipped, not failed.
+# without them the deploy steps are skipped, not failed.
+#
+#   web      -> stratosopx.com      (apps/web, static export)
+#   product  -> app.stratosopx.com  (apps/product, SPA + API Worker + D1)
 
 on:
   workflow_run:
@@ -19,8 +22,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    name: Deploy to Cloudflare
+  web:
+    name: Deploy website
     if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
     runs-on: ubuntu-latest
     environment:
@@ -37,14 +40,57 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - run: npm run build -w @stratosopx/web
       - name: Deploy with Wrangler
         if: env.HAS_TOKEN == 'true'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/web
           command: deploy
       - name: Skipped
         if: env.HAS_TOKEN != 'true'
         run: echo "::notice::CLOUDFLARE_API_TOKEN is not set; skipping deploy."
+
+  product:
+    name: Deploy product
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    environment:
+      name: production-app
+      url: https://app.stratosopx.com
+    env:
+      HAS_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - name: Check the product is provisioned
+        id: ready
+        run: |
+          if grep -q '00000000-0000-0000-0000-000000000000' apps/product/wrangler.jsonc; then
+            echo "::notice::D1 database not provisioned yet (placeholder ID in apps/product/wrangler.jsonc); skipping product deploy."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-node@v5
+        if: steps.ready.outputs.ok == 'true'
+        with:
+          node-version: 24
+          cache: npm
+      - if: steps.ready.outputs.ok == 'true'
+        run: npm ci
+      - if: steps.ready.outputs.ok == 'true'
+        run: npm run build -w @stratosopx/product
+      - name: Migrate database and deploy
+        if: steps.ready.outputs.ok == 'true' && env.HAS_TOKEN == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/product
+          command: |
+            d1 migrations apply stratosopx --remote
+            deploy

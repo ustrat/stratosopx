@@ -1,0 +1,3 @@
+# Copy to .dev.vars for local development (never committed).
+AUTH_MODE=dev
+DEV_USER_EMAIL=you@example.com
