@@ -16,16 +16,15 @@
     {
       "binding": "DB",
       "database_name": "stratosopx",
-      // Replaced with the real ID after `wrangler d1 create stratosopx`.
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "d3deea5b-6f82-4458-b251-87f2374b01c2",
       "migrations_dir": "migrations"
     }
   ],
   "vars": {
     // "access": identity from Cloudflare Access. "dev": local only, see .dev.vars.
     "AUTH_MODE": "access",
-    "ACCESS_TEAM_DOMAIN": "",
-    "ACCESS_AUD": ""
+    "ACCESS_TEAM_DOMAIN": "stratosopx.cloudflareaccess.com",
+    "ACCESS_AUD": "cc807d7f815cf5696b3b018f20b648d8153f51e679e90aba4d223e18e567ad8b"
   },
   "observability": { "enabled": true }
 }
