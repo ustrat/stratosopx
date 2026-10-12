@@ -115,3 +115,33 @@ describe("draft", () => {
     expect(warnings).toContain("7714-B was on the original order but is not in this revision.");
   });
 });
+
+describe("leaving lines off a new PO", () => {
+  it("skips checks and the payload for quantity-0 lines on a PO, not on a change order", async () => {
+    const { validateOrder, erpPayload } = await import("@stratosopx/core/orders");
+    const base = {
+      n: 2,
+      customerPart: "AC-GL-0099",
+      sku: UNMATCHED_SKU,
+      description: "Nitrile gloves",
+      matchConfidence: 0,
+      qty: 0,
+      uom: "BX",
+      unitPrice: 12.75,
+      sellUom: "BX",
+      uomOptions: [{ code: "BX", factor: 1 }],
+      tierPrice: 0,
+      stock: 0,
+    };
+    const good = { ...base, n: 1, sku: "4410-A", customerPart: "AC-HX-0375", description: "Hex bolt", matchConfidence: 0.99, qty: 800, uom: "EA", unitPrice: 0.42, sellUom: "EA", uomOptions: [{ code: "EA", factor: 1 }], tierPrice: 0.42, stock: 12400 };
+    const order = {
+      kind: "po" as const, id: "o", title: "PO-1", poNumber: "PO-1", customer: { name: "Acme", id: "C-1", creditLimit: 1e6, openBalance: 0 },
+      receivedAt: "", sourceFile: "", channel: "", erp: "NetSuite" as const, shipDate: "2026-10-30", lines: [good, base],
+    };
+    expect(validateOrder(order, order.lines, order.shipDate)).toEqual([]);
+    const items = (erpPayload(order, order.lines, order.shipDate).body as { item: { items: unknown[] } }).item.items;
+    expect(items).toHaveLength(1);
+    const co = { ...order, kind: "change-order" as const };
+    expect(validateOrder(co, co.lines, co.shipDate).map((i) => i.key)).toContain("unmatched-2");
+  });
+});

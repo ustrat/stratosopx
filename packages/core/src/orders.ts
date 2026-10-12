@@ -103,6 +103,8 @@ export function validateOrder(order: OrderReview, lines: OrderLine[], shipDate: 
   const issues: Issue[] = [];
 
   for (const l of lines) {
+    // On a new PO, quantity 0 means the reviewer left the line off the order.
+    if (order.kind === "po" && l.qty === 0) continue;
     if (l.sku === UNMATCHED_SKU) {
       issues.push({
         key: `unmatched-${l.n}`,
@@ -110,7 +112,7 @@ export function validateOrder(order: OrderReview, lines: OrderLine[], shipDate: 
         severity: "blocking",
         line: l.n,
         title: `No catalog match, line ${l.n}`,
-        message: `"${l.description}" (${l.customerPart}) doesn't match any SKU. Choose one in the line table.`,
+        message: `"${l.description}" (${l.customerPart}) doesn't match any SKU. Choose one in the line table${order.kind === "po" ? ", or set the quantity to 0 to leave it off the order" : ""}.`,
         canAccept: false,
       });
       continue;
@@ -228,6 +230,8 @@ export function formatDate(iso: string) {
 }
 
 export function erpPayload(order: OrderReview, lines: OrderLine[], shipDate: string) {
+  // Lines left off a new PO (quantity 0) are not sent; on a change order a 0 cancels the line.
+  lines = order.kind === "po" ? lines.filter((l) => l.qty > 0) : lines;
   if (order.erp === "SAP B1") {
     return {
       endpoint: order.salesOrder ? `PATCH /b1s/v1/Orders(${order.salesOrder})` : "POST /b1s/v1/Orders",
