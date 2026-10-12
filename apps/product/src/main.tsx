@@ -6,6 +6,7 @@ import { Layout } from "./components/Layout";
 import { Audit } from "./pages/Audit";
 import { Placeholder } from "./pages/common";
 import { ErpSync } from "./pages/ErpSync";
+import { Intake } from "./pages/Intake";
 import { OrderList, OrderReview } from "./pages/Orders";
 import { Overview } from "./pages/Overview";
 import { Settings } from "./pages/Settings";
@@ -18,6 +19,7 @@ createRoot(document.getElementById("root")!).render(
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<Overview />} />
+            <Route path="intake" element={<Intake />} />
             <Route path="review" element={<OrderList mode="open" />} />
             <Route path="review/:id" element={<OrderReview />} />
             <Route path="orders" element={<OrderList mode="all" />} />

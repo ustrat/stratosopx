@@ -80,7 +80,7 @@ export function screenDocument(doc: InboundDocument): ScreenResult {
   const maxPages = doc.kind === "bid" ? limits.bidMaxPages : limits.orderMaxPages;
   if (doc.pages && doc.pages > maxPages) reject.push(`${doc.pages} pages; the limit is ${maxPages} for ${doc.kind === "bid" ? "bid packages" : "orders"}`);
 
-  if (doc.malware === "detected") reject.push("Malware detected");
+  if (doc.malware === "detected") reject.push("Unsafe content detected");
   if (doc.malware === "pending") quarantine.push("Malware scan not finished");
   if (!doc.authPassed) quarantine.push("Sender failed SPF / DKIM / DMARC checks");
   if (!doc.senderAllowed) quarantine.push(`${doc.sender} is not on the trading-partner allowlist`);

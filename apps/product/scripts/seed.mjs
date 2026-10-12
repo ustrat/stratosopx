@@ -31,14 +31,18 @@ const criteria = [
 ].map(([label, done]) => ({ label, done }));
 
 // Start clean so the seed can be re-run.
-for (const table of ["audit_log", "approvals", "order_lines", "orders", "documents", "erp_sales_orders", "erp_customer_parts", "erp_items", "erp_customers", "users", "tenants"]) {
+for (const table of ["intake_senders", "audit_log", "approvals", "order_lines", "orders", "documents", "erp_sales_orders", "erp_customer_parts", "erp_items", "erp_customers", "users", "tenants"]) {
   sql.push(`DELETE FROM ${table} WHERE ${table === "tenants" ? "id" : "tenant_id"} = ${q(T)};`);
 }
 
 sql.push(
-  `INSERT INTO tenants (id, name, order_plan, erp_format, launch_criteria) VALUES (${q(T)}, 'Demo Distribution Co', 'growth', 'NetSuite', ${q(JSON.stringify(criteria))});`,
+  `INSERT INTO tenants (id, name, order_plan, erp_format, launch_criteria, intake_address) VALUES (${q(T)}, 'Demo Distribution Co', 'growth', 'NetSuite', ${q(JSON.stringify(criteria))}, 'demo');`,
   `INSERT INTO users (id, tenant_id, email, name, role) VALUES (${q(crypto.randomUUID())}, ${q(T)}, ${q(email)}, NULL, 'admin');`,
 );
+
+for (const pattern of ["@acme-industrial.example", "@deltafasteners.example", "ap@brightline.example"]) {
+  sql.push(`INSERT INTO intake_senders (tenant_id, pattern, added_by) VALUES (${q(T)}, ${q(pattern)}, 'seed');`);
+}
 
 const customers = [
   ["C-10442", "Acme Industrial", 25000, 8340],

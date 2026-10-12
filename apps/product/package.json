@@ -29,6 +29,7 @@
     "@stratosopx/core": "^0.1.0",
     "hono": "^4.13.13",
     "jose": "^6.2.12",
+    "postal-mime": "^4.0.5",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-router": "^8.4.0"

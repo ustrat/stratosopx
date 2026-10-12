@@ -69,9 +69,19 @@ export type DocumentRow = {
   sender: string | null;
   channel: string;
   outcome: "accept" | "quarantine" | "reject";
+  state: "stored" | "quarantined" | "rejected" | "released" | "deleted" | "expired";
   reasons: string[];
-  billable: number;
+  subject: string | null;
+  uploaded_by: string | null;
   received_at: string;
+  expires_at: string | null;
+  has_file: number;
+};
+
+export type IntakeSettings = {
+  address: string | null;
+  senders: { pattern: string; added_by: string; created_at: string }[];
+  limits: { maxFileMB: number; orderMaxPages: number; bidMaxPages: number };
 };
 
 export type AuditEntry = { actor: string; action: string; target: string | null; detail: Record<string, unknown>; created_at: string };

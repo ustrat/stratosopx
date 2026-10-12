@@ -216,15 +216,6 @@ api.put("/controls/mode", async (c) => {
   return c.json({ mode });
 });
 
-api.get("/documents", async (c) => {
-  const rows = await c.env.DB.prepare(
-    "SELECT id, filename, kind, size_bytes, pages, sender, channel, outcome, reasons, billable, received_at FROM documents WHERE tenant_id = ? ORDER BY received_at DESC LIMIT 100",
-  )
-    .bind(c.get("user").tenantId)
-    .all();
-  return c.json({ documents: rows.results.map((d) => ({ ...d, reasons: JSON.parse(String(d.reasons)) })) });
-});
-
 api.get("/audit", async (c) => {
   const user = c.get("user");
   requireRole(user, "admin");

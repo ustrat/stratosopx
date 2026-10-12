@@ -1722,3 +1722,83 @@ select.cell-input {
 .connection .meta-list {
   margin: 8px 0;
 }
+
+/* ---------- Intake ---------- */
+
+.upload-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.file-input {
+  min-height: 44px;
+  padding: 8px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-soft);
+  font: inherit;
+  font-size: 14px;
+}
+
+.text-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+}
+
+.address-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+  font-size: 13px;
+  word-break: break-all;
+}
+
+.review-side .address-box .btn,
+.review-side .sender-list .btn,
+.review-side .sender-add .btn {
+  width: auto;
+}
+
+.sender-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+
+.sender-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sender-add {
+  display: flex;
+  gap: 8px;
+}
+
+.row-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}

@@ -20,7 +20,11 @@
       "migrations_dir": "migrations"
     }
   ],
+  "r2_buckets": [{ "binding": "DOCS", "bucket_name": "stratosopx-documents" }],
+  // Daily document retention job, 03:17 UTC.
+  "triggers": { "crons": ["17 3 * * *"] },
   "vars": {
+    "INTAKE_DOMAIN": "in.stratosopx.com",
     // "access": identity from Cloudflare Access. "dev": local only, see .dev.vars.
     "AUTH_MODE": "access",
     "ACCESS_TEAM_DOMAIN": "stratosopx.cloudflareaccess.com",

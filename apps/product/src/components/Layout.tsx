@@ -7,6 +7,7 @@ import { Logo } from "./Logo";
 
 const nav: { to: string; label: string; icon: IconName; end?: boolean; adminOnly?: boolean }[] = [
   { to: "/", label: "Overview", icon: "overview", end: true },
+  { to: "/intake", label: "Intake", icon: "inbox" },
   { to: "/review", label: "Review queue", icon: "shield" },
   { to: "/orders", label: "Orders", icon: "document" },
   { to: "/bids", label: "Bids & RFPs", icon: "building" },
