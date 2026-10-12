@@ -1,3 +1,5 @@
 # Copy to .dev.vars for local development (never committed).
 AUTH_MODE=dev
 DEV_USER_EMAIL=you@example.com
+# Claude API key for local extraction tests (never committed)
+ANTHROPIC_API_KEY=

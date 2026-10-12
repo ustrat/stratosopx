@@ -3,6 +3,8 @@ declare global {
   interface Env {
     /** Local development only (.dev.vars): the signed-in user's email. */
     DEV_USER_EMAIL?: string;
+    /** Secret: Claude API key for order extraction (wrangler secret put ANTHROPIC_API_KEY). */
+    ANTHROPIC_API_KEY?: string;
   }
 }
 

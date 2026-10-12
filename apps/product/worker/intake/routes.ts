@@ -4,6 +4,7 @@ import { HTTPException } from "hono/http-exception";
 import { requireRole } from "../auth";
 import type { AppEnv } from "../env";
 import { audit } from "../orders";
+import { enqueueExtraction } from "../extract/process";
 import { ingest } from "./ingest";
 
 export const intake = new Hono<AppEnv>();
@@ -52,7 +53,8 @@ intake.delete("/intake/senders/:pattern", async (c) => {
 
 intake.get("/documents", async (c) => {
   const rows = await c.env.DB.prepare(
-    `SELECT id, filename, kind, size_bytes, pages, sender, channel, outcome, state, reasons, subject, uploaded_by, received_at, expires_at, r2_key IS NOT NULL AS has_file
+    `SELECT id, filename, kind, size_bytes, pages, sender, channel, outcome, state, reasons, subject, uploaded_by, received_at, expires_at, r2_key IS NOT NULL AS has_file,
+            extraction_state, extraction_note, order_id
      FROM documents WHERE tenant_id = ? ORDER BY received_at DESC LIMIT 100`,
   )
     .bind(c.get("user").tenantId)
@@ -108,6 +110,7 @@ intake.post("/documents/:id/release", async (c) => {
     ).bind(user.email, days(limits.sourceRetentionDays), user.tenantId, doc.id),
     audit(c.env.DB, user.tenantId, user.email, "document.released", doc.id, { filename: doc.filename }),
   ]);
+  await enqueueExtraction(c.env, user.tenantId, doc.id);
   return c.json({ state: "released" });
 });
 
@@ -143,5 +146,39 @@ intake.get("/documents/:id/file", async (c) => {
       "X-Content-Type-Options": "nosniff",
       "Cache-Control": "no-store",
     },
+  });
+});
+
+intake.post("/documents/:id/extract", async (c) => {
+  const user = c.get("user");
+  requireRole(user, "admin", "approver");
+  const doc = await loadDoc(c, user.tenantId, c.req.param("id"));
+  if (!["stored", "released"].includes(doc.state)) throw new HTTPException(409, { message: "Only accepted documents can be extracted" });
+  const row = await c.env.DB.prepare("SELECT extraction_state FROM documents WHERE tenant_id = ? AND id = ?")
+    .bind(user.tenantId, doc.id)
+    .first<{ extraction_state: string }>();
+  if (row && ["queued", "running", "done"].includes(row.extraction_state)) {
+    throw new HTTPException(409, { message: `Extraction is already ${row.extraction_state}` });
+  }
+  await enqueueExtraction(c.env, user.tenantId, doc.id);
+  await audit(c.env.DB, user.tenantId, user.email, "document.extraction_requested", doc.id).run();
+  return c.json({ extraction_state: "queued" });
+});
+
+intake.get("/catalog", async (c) => {
+  const rows = await c.env.DB.prepare(
+    "SELECT sku, description, sell_uom, uom_options, tier_price, stock FROM erp_items WHERE tenant_id = ? ORDER BY sku",
+  )
+    .bind(c.get("user").tenantId)
+    .all<{ sku: string; description: string; sell_uom: string; uom_options: string; tier_price: number; stock: number }>();
+  return c.json({
+    items: rows.results.map((r) => ({
+      sku: r.sku,
+      description: r.description,
+      sellUom: r.sell_uom,
+      uomOptions: JSON.parse(r.uom_options),
+      tierPrice: r.tier_price,
+      stock: r.stock,
+    })),
   });
 });

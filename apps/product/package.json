@@ -26,12 +26,15 @@
     "wrangler": "^4.149.0"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.133.0",
     "@stratosopx/core": "^0.1.0",
+    "fflate": "^0.8.3",
     "hono": "^4.13.13",
     "jose": "^6.2.12",
     "postal-mime": "^4.0.5",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "react-router": "^8.4.0"
+    "react-router": "^8.4.0",
+    "zod": "^4.6.7"
   }
 }

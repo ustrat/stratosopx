@@ -3,10 +3,13 @@ import { HTTPException } from "hono/http-exception";
 import { secureHeaders } from "hono/secure-headers";
 import { authenticate } from "./auth";
 import type { AppEnv } from "./env";
+import { processDocument, RetryLater } from "./extract/process";
 import { handleEmail } from "./intake/email";
 import { enforceRetention } from "./intake/retention";
 import { intake } from "./intake/routes";
 import { api } from "./routes";
+
+type ExtractJob = { tenantId: string; documentId: string };
 
 // Requests for /api/* reach this Worker first (wrangler.jsonc run_worker_first);
 // everything else is served from the built SPA assets.
@@ -37,4 +40,27 @@ export default {
   scheduled: async (_event, env, ctx) => {
     ctx.waitUntil(enforceRetention(env));
   },
-} satisfies ExportedHandler<Env>;
+  // Background extraction of accepted order documents.
+  queue: async (batch, env) => {
+    for (const msg of batch.messages) {
+      try {
+        await processDocument(env, msg.body.tenantId, msg.body.documentId);
+        msg.ack();
+      } catch (err) {
+        if (err instanceof RetryLater) {
+          msg.retry({ delaySeconds: 60 * msg.attempts });
+        } else if (msg.attempts >= 3) {
+          console.error("extraction failed", msg.body, err);
+          await env.DB.prepare(
+            "UPDATE documents SET extraction_state = 'failed', extraction_note = 'Unexpected error during extraction' WHERE tenant_id = ? AND id = ?",
+          )
+            .bind(msg.body.tenantId, msg.body.documentId)
+            .run();
+          msg.ack();
+        } else {
+          msg.retry({ delaySeconds: 30 });
+        }
+      }
+    }
+  },
+} satisfies ExportedHandler<Env, ExtractJob>;

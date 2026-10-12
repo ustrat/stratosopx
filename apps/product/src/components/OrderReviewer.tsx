@@ -1,5 +1,6 @@
 import { fingerprint, tierInfo } from "@stratosopx/core/controls";
 import {
+  UNMATCHED_SKU,
   erpPayload,
   formatDate,
   money,
@@ -11,7 +12,7 @@ import {
 } from "@stratosopx/core/orders";
 import { useMemo, useState } from "react";
 import { formatDateTime, post, type ApiError } from "../api";
-import type { OrderDetail } from "../types";
+import type { CatalogItem, OrderDetail } from "../types";
 import { useControls } from "./Controls";
 
 const checks: { category: IssueCategory; label: string }[] = [
@@ -31,7 +32,15 @@ const statusText: Record<OrderDetail["status"], string> = {
   rejected: "Rejected · returned to sender",
 };
 
-export function OrderReviewer({ detail, onDecided }: { detail: OrderDetail; onDecided: () => void }) {
+export function OrderReviewer({
+  detail,
+  catalog,
+  onDecided,
+}: {
+  detail: OrderDetail;
+  catalog: CatalogItem[];
+  onDecided: () => void;
+}) {
   const order = detail.order;
   const [lines, setLines] = useState<OrderLine[]>(order.lines);
   const [shipDate, setShipDate] = useState(order.shipDate);
@@ -59,6 +68,30 @@ export function OrderReviewer({ detail, onDecided }: { detail: OrderDetail; onDe
     setLines((ls) => ls.map((l) => (l.n === n ? { ...l, ...patch } : l)));
   }
 
+  // Reassign a line to a catalog SKU; the server re-applies the same catalog data.
+  function changeSku(n: number, sku: string) {
+    const item = catalog.find((i) => i.sku === sku);
+    if (!item) return;
+    setLines((ls) =>
+      ls.map((l) =>
+        l.n !== n
+          ? l
+          : {
+              ...l,
+              sku: item.sku,
+              description: item.description,
+              sellUom: item.sellUom,
+              uomOptions: item.uomOptions,
+              tierPrice: item.tierPrice,
+              stock: item.stock,
+              matchConfidence: 1,
+              uom: item.sellUom,
+              unitPrice: l.sku === UNMATCHED_SKU || !l.unitPrice ? item.tierPrice : l.unitPrice,
+            },
+      ),
+    );
+  }
+
   function applyFix(issue: Issue) {
     if (!issue.fix) return;
     if (issue.fix.line !== undefined && issue.fix.patch) updateLine(issue.fix.line, issue.fix.patch);
@@ -75,7 +108,7 @@ export function OrderReviewer({ detail, onDecided }: { detail: OrderDetail; onDe
     try {
       if (kind === "approve") {
         await post(`/orders/${encodeURIComponent(order.id)}/approve`, {
-          lines: lines.map(({ n, qty, uom, unitPrice }) => ({ n, qty, uom, unitPrice })),
+          lines: lines.map(({ n, qty, uom, unitPrice, sku }) => ({ n, qty, uom, unitPrice, sku })),
           shipDate,
           acceptedIssues: issues.filter((i) => accepted.has(i.key)).map((i) => i.key),
           fingerprint: payloadFingerprint,
@@ -182,7 +215,25 @@ export function OrderReviewer({ detail, onDecided }: { detail: OrderDetail; onDe
                     <td>
                       <span className="mono">{l.customerPart}</span>
                       <span className="arrow"> → </span>
-                      <span className="mono sku">{l.sku}</span>
+                      {!locked && catalog.length > 0 && (l.sku === UNMATCHED_SKU || l.matchConfidence < 0.9) ? (
+                        <select
+                          aria-label={`SKU, line ${l.n}`}
+                          className="cell-input mono sku-select"
+                          value={l.sku === UNMATCHED_SKU ? "" : l.sku}
+                          onChange={(e) => changeSku(l.n, e.target.value)}
+                        >
+                          <option value="" disabled>
+                            Choose SKU…
+                          </option>
+                          {catalog.map((i) => (
+                            <option key={i.sku} value={i.sku}>
+                              {i.sku} · {i.description}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <span className="mono sku">{l.sku === UNMATCHED_SKU ? "no match" : l.sku}</span>
+                      )}
                       <span className={`confidence${l.matchConfidence < 0.9 ? " low" : ""}`}>
                         {Math.round(l.matchConfidence * 100)}%
                       </span>

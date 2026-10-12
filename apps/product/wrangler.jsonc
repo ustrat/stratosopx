@@ -21,10 +21,25 @@
     }
   ],
   "r2_buckets": [{ "binding": "DOCS", "bucket_name": "stratosopx-documents" }],
+  // Accepted order documents are extracted in the background, one at a time.
+  "queues": {
+    "producers": [{ "binding": "EXTRACT_QUEUE", "queue": "stratosopx-extraction" }],
+    "consumers": [
+      {
+        "queue": "stratosopx-extraction",
+        "max_batch_size": 1,
+        "max_batch_timeout": 5,
+        "max_retries": 3,
+        "dead_letter_queue": "stratosopx-extraction-dlq"
+      }
+    ]
+  },
   // Daily document retention job, 03:17 UTC.
   "triggers": { "crons": ["17 3 * * *"] },
   "vars": {
     "INTAKE_DOMAIN": "in.stratosopx.com",
+    // Claude model for order extraction. The API key is a secret: ANTHROPIC_API_KEY.
+    "EXTRACTION_MODEL": "claude-opus-5-5",
     // "access": identity from Cloudflare Access. "dev": local only, see .dev.vars.
     "AUTH_MODE": "access",
     "ACCESS_TEAM_DOMAIN": "stratosopx.cloudflareaccess.com",

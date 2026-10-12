@@ -44,6 +44,8 @@ export type OrderSummary = {
 export type OrderDetail = {
   order: OrderReview;
   status: OrderStatus;
+  warnings: string[];
+  documentId: string | null;
   source: { filename: string | null; channel: string | null; sender: string | null };
   decision: { decision: "approved" | "rejected"; note: string | null; fingerprint: string | null; created_at: string; approver: string } | null;
   erp: { name: string; environment: "sandbox" | "production"; format: string };
@@ -76,6 +78,18 @@ export type DocumentRow = {
   received_at: string;
   expires_at: string | null;
   has_file: number;
+  extraction_state: "none" | "queued" | "running" | "done" | "not_order" | "skipped" | "needs_attention" | "failed";
+  extraction_note: string | null;
+  order_id: string | null;
+};
+
+export type CatalogItem = {
+  sku: string;
+  description: string;
+  sellUom: string;
+  uomOptions: { code: string; factor: number }[];
+  tierPrice: number;
+  stock: number;
 };
 
 export type IntakeSettings = {

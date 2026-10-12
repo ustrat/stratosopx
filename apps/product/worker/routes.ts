@@ -157,6 +157,8 @@ api.get("/orders/:id", async (c) => {
   return c.json({
     order: o.review,
     status: o.row.status,
+    warnings: JSON.parse(o.row.extraction_warnings ?? "[]") as string[],
+    documentId: o.row.document_id,
     source: o.source,
     decision,
     erp: { name: erp.name, environment: erp.environment, format: tenant.erp_format },

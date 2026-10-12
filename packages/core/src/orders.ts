@@ -72,6 +72,9 @@ export type Review = OrderReview | BidReview;
 
 export type IssueCategory = "match" | "uom" | "pricing" | "inventory" | "change" | "credit";
 
+/** SKU placeholder for an extracted line that matched nothing in the catalog. */
+export const UNMATCHED_SKU = "UNMATCHED";
+
 export type Issue = {
   key: string;
   category: IssueCategory;
@@ -100,6 +103,18 @@ export function validateOrder(order: OrderReview, lines: OrderLine[], shipDate: 
   const issues: Issue[] = [];
 
   for (const l of lines) {
+    if (l.sku === UNMATCHED_SKU) {
+      issues.push({
+        key: `unmatched-${l.n}`,
+        category: "match",
+        severity: "blocking",
+        line: l.n,
+        title: `No catalog match, line ${l.n}`,
+        message: `"${l.description}" (${l.customerPart}) doesn't match any SKU. Choose one in the line table.`,
+        canAccept: false,
+      });
+      continue;
+    }
     if (l.matchConfidence < 0.9) {
       issues.push({
         key: `match-${l.n}`,

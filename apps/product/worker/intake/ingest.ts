@@ -1,4 +1,5 @@
 import { limits, screenDocument, type DocKind, type Outcome } from "@stratosopx/core/ingestion-policy";
+import { enqueueExtraction } from "../extract/process";
 import { audit } from "../orders";
 import { checkFile, sanitizeFilename } from "./filecheck";
 
@@ -116,6 +117,8 @@ export async function ingest(env: Env, input: IngestInput): Promise<IngestResult
       ),
     audit(db, input.tenantId, input.actor, `document.${state}`, id, { filename, channel: input.channel, reasons }),
   ]);
+
+  if (state === "stored") await enqueueExtraction(env, input.tenantId, id);
 
   return { id, filename, outcome, state, reasons, billable: state === "stored" };
 }

@@ -28,6 +28,7 @@ export type OrderRow = {
   initial_issue_count: number;
   received_at: string;
   decided_at: string | null;
+  extraction_warnings: string | null;
 };
 
 type LineRow = {

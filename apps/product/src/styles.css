@@ -1802,3 +1802,12 @@ select.cell-input {
   justify-content: flex-end;
   gap: 6px;
 }
+
+.sku-select {
+  width: 220px;
+  text-align: left;
+}
+
+.extraction-notes .btn {
+  width: auto;
+}

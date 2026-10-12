@@ -1,4 +1,5 @@
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { Link } from "react-router";
 import { api, formatDateTime, post, useApi, type ApiError } from "../api";
 import { Icon } from "../components/Icon";
 import type { DocumentRow, IntakeSettings, Me } from "../types";
@@ -12,6 +13,43 @@ const stateLabel: Record<DocumentRow["state"], { label: string; tone: string }> 
   deleted: { label: "Deleted", tone: "danger" },
   expired: { label: "Expired", tone: "info" },
 };
+
+const extractionLabel: Record<DocumentRow["extraction_state"], { label: string; tone: string } | null> = {
+  none: null,
+  queued: { label: "Waiting to read", tone: "info" },
+  running: { label: "Reading…", tone: "info" },
+  done: { label: "Order created", tone: "success" },
+  not_order: { label: "Not an order", tone: "info" },
+  skipped: { label: "Skipped", tone: "info" },
+  needs_attention: { label: "Needs attention", tone: "warning" },
+  failed: { label: "Failed", tone: "danger" },
+};
+
+function ExtractionCell({ doc, canRetry, onRetry }: { doc: DocumentRow; canRetry: boolean; onRetry: (id: string) => void }) {
+  const l = extractionLabel[doc.extraction_state];
+  if (!l) return <span className="desc">—</span>;
+  return (
+    <>
+      {doc.extraction_state === "done" && doc.order_id ? (
+        <Link to={`/review/${doc.order_id}`} className={`pill tone-${l.tone}`} style={{ textDecoration: "none" }}>
+          {l.label} →
+        </Link>
+      ) : (
+        <span className={`pill tone-${l.tone}`}>{l.label}</span>
+      )}
+      {doc.extraction_note && doc.extraction_state !== "done" && (
+        <ul className="screen-reasons">
+          <li>{doc.extraction_note}</li>
+        </ul>
+      )}
+      {canRetry && (doc.extraction_state === "failed" || doc.extraction_state === "needs_attention") && (
+        <button type="button" className="btn btn-ghost btn-sm" style={{ marginTop: 6 }} onClick={() => onRetry(doc.id)}>
+          Retry
+        </button>
+      )}
+    </>
+  );
+}
 
 type UploadResult = { filename: string; state: DocumentRow["state"]; reasons: string[] };
 
@@ -162,6 +200,19 @@ export function Intake() {
   const isAdmin = me?.user.role === "admin";
   const canUpload = me?.user.role === "admin" || me?.user.role === "approver";
 
+  // Refresh while documents are being read.
+  const busy = docs.data?.documents.some((d) => d.extraction_state === "queued" || d.extraction_state === "running");
+  useEffect(() => {
+    if (!busy) return;
+    const t = setInterval(docs.reload, 5000);
+    return () => clearInterval(t);
+  }, [busy, docs.reload]);
+
+  async function retry(id: string) {
+    await post(`/documents/${id}/extract`, {}).catch(() => {});
+    docs.reload();
+  }
+
   async function act(id: string, action: "release" | "delete") {
     if (action === "delete" && !confirm("Delete this document and its stored file?")) return;
     await api(`/documents/${id}${action === "release" ? "/release" : ""}`, { method: action === "release" ? "POST" : "DELETE" }).catch(
@@ -213,6 +264,7 @@ export function Intake() {
                       <th scope="col">From</th>
                       <th scope="col">Received</th>
                       <th scope="col">Screening</th>
+                      <th scope="col">Extraction</th>
                       <th scope="col">
                         <span className="sr-only">Actions</span>
                       </th>
@@ -243,6 +295,9 @@ export function Intake() {
                               ))}
                             </ul>
                           )}
+                        </td>
+                        <td>
+                          <ExtractionCell doc={d} canRetry={canUpload} onRetry={retry} />
                         </td>
                         <td className="num">
                           <div className="row-actions">

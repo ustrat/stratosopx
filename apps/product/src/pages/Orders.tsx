@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router";
 import { formatDateTime, useApi } from "../api";
 import { OrderReviewer } from "../components/OrderReviewer";
-import type { OrderDetail, OrderSummary } from "../types";
+import type { CatalogItem, OrderDetail, OrderSummary } from "../types";
 import { ErrorCard, Loading, statusLabel } from "./common";
 
 export function OrderList({ mode }: { mode: "open" | "all" }) {
@@ -73,6 +73,7 @@ export function OrderList({ mode }: { mode: "open" | "all" }) {
 export function OrderReview() {
   const { id = "" } = useParams();
   const { data, error, reload } = useApi<OrderDetail>(`/orders/${encodeURIComponent(id)}`);
+  const catalog = useApi<{ items: CatalogItem[] }>("/catalog");
 
   if (error) return <ErrorCard error={error} />;
   if (!data) return <Loading />;
@@ -109,8 +110,31 @@ export function OrderReview() {
           </p>
         </div>
       </div>
+      {(data.warnings.length > 0 || data.documentId) && (
+        <section className="card extraction-notes" aria-labelledby="notes-title">
+          <div className="card-head">
+            <h2 id="notes-title">Extraction notes</h2>
+            {data.documentId && data.source.filename && (
+              <a className="btn btn-ghost btn-sm" href={`/api/documents/${data.documentId}/file`}>
+                Download source
+              </a>
+            )}
+          </div>
+          {data.warnings.length ? (
+            <ul className="screen-reasons" style={{ fontSize: 13, lineHeight: 1.7 }}>
+              {data.warnings.map((w) => (
+                <li key={w}>{w}</li>
+              ))}
+            </ul>
+          ) : (
+            <p className="hint" style={{ margin: 0 }}>
+              Nothing unusual was found when this order was read.
+            </p>
+          )}
+        </section>
+      )}
       {/* Remount on status change so local edits reset to the stored order. */}
-      <OrderReviewer key={data.status} detail={data} onDecided={reload} />
+      <OrderReviewer key={data.status} detail={data} catalog={catalog.data?.items ?? []} onDecided={reload} />
     </>
   );
 }

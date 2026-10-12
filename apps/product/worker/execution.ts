@@ -11,7 +11,7 @@ import { audit, getTenant, loadOrder } from "./orders";
 // approver's role and the emergency stop, and only writes the exact payload the
 // approver saw (bound by fingerprint).
 
-export type LineEdit = { n: number; qty: number; uom: string; unitPrice: number };
+export type LineEdit = { n: number; qty: number; uom: string; unitPrice: number; sku?: string };
 
 export type ApproveInput = {
   lines: LineEdit[];
@@ -23,20 +23,47 @@ export type ApproveInput = {
 
 const isDate = (s: string) => /^\d{4}-\d{2}-\d{2}$/.test(s) && !Number.isNaN(Date.parse(s));
 
-function applyEdits(lines: OrderLine[], edits: LineEdit[]): OrderLine[] {
-  return lines.map((line) => {
+type ItemRow = { sku: string; description: string; sell_uom: string; uom_options: string; tier_price: number; stock: number };
+
+// Quantity, unit and price are editable. A reviewer may also reassign the SKU;
+// the item's description, units, contract price and stock then come from the
+// ERP catalog, never from the browser, and the match counts as confirmed.
+async function applyEdits(db: D1Database, tenantId: string, lines: OrderLine[], edits: LineEdit[]): Promise<OrderLine[]> {
+  const out: OrderLine[] = [];
+  for (const line of lines) {
     const edit = edits.find((e) => e.n === line.n);
-    if (!edit) return line;
+    if (!edit) {
+      out.push(line);
+      continue;
+    }
+    let next = line;
+    if (edit.sku && edit.sku !== line.sku) {
+      const item = await db
+        .prepare("SELECT sku, description, sell_uom, uom_options, tier_price, stock FROM erp_items WHERE tenant_id = ? AND sku = ?")
+        .bind(tenantId, edit.sku)
+        .first<ItemRow>();
+      if (!item) throw new HTTPException(400, { message: `SKU ${edit.sku} is not in the catalog` });
+      next = {
+        ...line,
+        sku: item.sku,
+        description: item.description,
+        sellUom: item.sell_uom,
+        uomOptions: JSON.parse(item.uom_options) as OrderLine["uomOptions"],
+        tierPrice: item.tier_price,
+        stock: item.stock,
+        matchConfidence: 1,
+      };
+    }
     if (!Number.isFinite(edit.qty) || edit.qty < 0) throw new HTTPException(400, { message: `Invalid quantity on line ${line.n}` });
     if (!Number.isFinite(edit.unitPrice) || edit.unitPrice < 0) {
       throw new HTTPException(400, { message: `Invalid unit price on line ${line.n}` });
     }
-    if (!line.uomOptions.some((u) => u.code === edit.uom)) {
-      throw new HTTPException(400, { message: `Unit ${edit.uom} is not valid for ${line.sku}` });
+    if (!next.uomOptions.some((u) => u.code === edit.uom)) {
+      throw new HTTPException(400, { message: `Unit ${edit.uom} is not valid for ${next.sku}` });
     }
-    // Only quantity, unit and price are editable; SKU, ERP prices and stock come from the server.
-    return { ...line, qty: edit.qty, uom: edit.uom, unitPrice: edit.unitPrice };
-  });
+    out.push({ ...next, qty: edit.qty, uom: edit.uom, unitPrice: edit.unitPrice });
+  }
+  return out;
 }
 
 export async function approveOrder(db: D1Database, user: User, orderId: string, input: ApproveInput) {
@@ -49,7 +76,7 @@ export async function approveOrder(db: D1Database, user: User, orderId: string, 
   if (loaded.row.status !== "needs_review") throw new HTTPException(409, { message: `Order is already ${loaded.row.status}` });
   if (!isDate(input.shipDate)) throw new HTTPException(400, { message: "Invalid ship date" });
 
-  const lines = applyEdits(loaded.review.lines, input.lines ?? []);
+  const lines = await applyEdits(db, tenant.id, loaded.review.lines, input.lines ?? []);
   const issues = validateOrder(loaded.review, lines, input.shipDate);
   const accepted = new Set(input.acceptedIssues ?? []);
   const blocking = issues.filter((i) => !i.canAccept && accepted.has(i.key));
@@ -67,8 +94,11 @@ export async function approveOrder(db: D1Database, user: User, orderId: string, 
   const idempotencyKey = `${orderId}-${fp}`;
   const updates = lines.map((l) =>
     db
-      .prepare("UPDATE order_lines SET qty = ?, uom = ?, unit_price = ? WHERE tenant_id = ? AND order_id = ? AND n = ?")
-      .bind(l.qty, l.uom, l.unitPrice, tenant.id, orderId, l.n),
+      .prepare(
+        `UPDATE order_lines SET qty = ?, uom = ?, unit_price = ?, sku = ?, description = ?, sell_uom = ?, uom_options = ?, tier_price = ?, stock = ?, match_confidence = ?
+         WHERE tenant_id = ? AND order_id = ? AND n = ?`,
+      )
+      .bind(l.qty, l.uom, l.unitPrice, l.sku, l.description, l.sellUom, JSON.stringify(l.uomOptions), l.tierPrice, l.stock, l.matchConfidence, tenant.id, orderId, l.n),
   );
 
   // Claim the order first so two concurrent approvals cannot both proceed.
