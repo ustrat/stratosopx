@@ -5,7 +5,7 @@ import { KillSwitch } from "./Controls";
 import { Icon, type IconName } from "./Icon";
 import { Logo } from "./Logo";
 
-const nav: { to: string; label: string; icon: IconName; end?: boolean; adminOnly?: boolean }[] = [
+const nav: { to: string; label: string; icon: IconName; end?: boolean; adminOnly?: boolean; platformOnly?: boolean }[] = [
   { to: "/", label: "Overview", icon: "overview", end: true },
   { to: "/intake", label: "Intake", icon: "inbox" },
   { to: "/review", label: "Review queue", icon: "shield" },
@@ -14,6 +14,7 @@ const nav: { to: string; label: string; icon: IconName; end?: boolean; adminOnly
   { to: "/erp-sync", label: "ERP sync", icon: "database" },
   { to: "/settings", label: "Settings & controls", icon: "settings" },
   { to: "/audit", label: "Audit log", icon: "layers", adminOnly: true },
+  { to: "/platform", label: "Companies", icon: "building", platformOnly: true },
 ];
 
 export function Layout() {
@@ -49,7 +50,7 @@ export function Layout() {
         <Logo />
         <nav aria-label="Main" className="sidebar-nav">
           {nav
-            .filter((n) => !n.adminOnly || me?.user.role === "admin")
+            .filter((n) => (!n.adminOnly || me?.user.role === "admin") && (!n.platformOnly || me?.isPlatformAdmin))
             .map((n) => (
               <NavLink key={n.to} to={n.to} end={n.end} className="sidebar-link">
                 <Icon name={n.icon} />

@@ -2,7 +2,7 @@ import { validateOrder, type OrderReview, type Uom } from "@stratosopx/core/orde
 import { audit, type TenantRow } from "../orders";
 import { extractWithClaude, type Catalog } from "./claude";
 import { convert } from "./convert";
-import { buildLines, resolveCustomer, resolveShipDate, type CatalogItem, type PriorOrder } from "./draft";
+import { buildLines, filterModelWarnings, resolveCustomer, resolveShipDate, type CatalogItem, type PriorOrder } from "./draft";
 
 export class RetryLater extends Error {}
 
@@ -148,7 +148,7 @@ export async function processDocument(env: Env, tenantId: string, documentId: st
   }
 
   let prior: PriorOrder | null = null;
-  const warnings = [...ext.warnings];
+  const warnings: string[] = [];
   if (ext.document_type === "change_order") {
     prior = await loadPrior(db, tenantId, customerId, poNumber);
     if (!prior) warnings.push(`This looks like a change to PO ${poNumber}, but no approved order with that number was found. Treated as a new order.`);
@@ -163,14 +163,16 @@ export async function processDocument(env: Env, tenantId: string, documentId: st
     }
   }
 
-  const { lines, warnings: lineWarnings } = buildLines(ext.lines, customerId, itemMap, aliasMap, prior);
+  const { lines, warnings: lineWarnings, facts } = buildLines(ext.lines, customerId, itemMap, aliasMap, prior);
   if (!lines.length) {
     await needsAttention("No order lines were found on the document.");
     return;
   }
-  warnings.push(...lineWarnings);
   const ship = resolveShipDate(ext.ship_date, doc.received_at);
+  // Server findings first, then the model's notes that are still open.
+  warnings.push(...lineWarnings);
   if (ship.warning) warnings.push(ship.warning);
+  warnings.push(...filterModelWarnings(ext.warnings, ext.lines, facts, { shipDateDefaulted: !!ship.warning }));
 
   const customer = customerRows.find((c) => c.id === customerId)!;
   const orderId = crypto.randomUUID();

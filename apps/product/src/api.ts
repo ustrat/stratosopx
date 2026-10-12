@@ -49,5 +49,11 @@ export function useApi<T>(path: string | null) {
   return { data, error, loading: !data && !error, reload };
 }
 
+export function formatBytes(n: number) {
+  if (n < 1000) return `${n} B`;
+  if (n < 1_000_000) return `${(n / 1000).toFixed(n < 10_000 ? 1 : 0)} KB`;
+  return `${(n / 1_000_000).toFixed(1)} MB`;
+}
+
 export const formatDateTime = (iso: string) =>
   new Date(iso).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });

@@ -3,7 +3,7 @@ import { strToU8, zipSync } from "fflate";
 import { describe, expect, it } from "vitest";
 import type { Extraction } from "../worker/extract/claude";
 import { convert, decodeXml, docxToText, xlsxToText } from "../worker/extract/convert";
-import { buildLines, normalizeUom, resolveCustomer, resolveShipDate, type CatalogItem } from "../worker/extract/draft";
+import { buildLines, filterModelWarnings, normalizeUom, resolveCustomer, resolveShipDate, type CatalogItem } from "../worker/extract/draft";
 
 const EA = { code: "EA", factor: 1 };
 const items = new Map<string, CatalogItem>([
@@ -21,7 +21,6 @@ const line = (over: Partial<Extraction["lines"][number]> = {}): Extraction["line
   unit_price: 0.42,
   matched_sku: "4410-A",
   match_confidence: 0.96,
-  note: null,
   ...over,
 });
 
@@ -143,5 +142,53 @@ describe("leaving lines off a new PO", () => {
     expect(items).toHaveLength(1);
     const co = { ...order, kind: "change-order" as const };
     expect(validateOrder(co, co.lines, co.shipDate).map((i) => i.key)).toContain("unmatched-2");
+  });
+});
+
+describe("filterModelWarnings", () => {
+  it("keeps only the notes the server did not resolve (PO-48500 replay)", () => {
+    const aliasesAcme = new Map([
+      ["C-1|ac-hx-0375", "4410-A"],
+      ["C-1|ac-ss-7714", "7714-B"],
+    ]);
+    const catalog = new Map(items);
+    catalog.set("4420-C", { sku: "4420-C", description: "Flat washer", sellUom: "EA", uomOptions: [EA, { code: "BX", factor: 100 }], tierPrice: 0.06, stock: 30000 });
+    const extracted = [
+      line({ line_number: 1, customer_part: "AC-HX-0375", quantity: 800 }),
+      line({ line_number: 2, customer_part: null, description: "Flat washer", matched_sku: "4420-C", match_confidence: 0.85, uom: "PCS", unit_price: 0.06 }),
+      line({ line_number: 3, customer_part: "AC-SS-7714", matched_sku: "7714-B", quantity: 5, uom: "CASE", unit_price: 18.4 }),
+      line({ line_number: 4, customer_part: "AC-GL-0099", description: "Nitrile gloves", matched_sku: null, match_confidence: 0, uom: "BX", unit_price: 12.75 }),
+    ];
+    const { facts } = buildLines(extracted, "C-1", catalog, aliasesAcme, null);
+    const kept = filterModelWarnings(
+      [
+        { topic: "authenticity", line_number: null, message: "Sender domain doesn't match the customer's." },
+        { topic: "customer_match", line_number: null, message: "Matched Acme Industrial Supply Co. to Acme Industrial." },
+        { topic: "sku_match", line_number: 4, message: "Gloves are not in the catalog." },
+        { topic: "unit", line_number: null, message: "Lines 2 and 3 use units that need mapping." },
+        { topic: "missing_info", line_number: null, message: "No order total is stated." },
+        { topic: "sku_match", line_number: 2, message: "Matched by description." },
+        { topic: "unit", line_number: 3, message: "CASE vs CS; confirm pack size." },
+      ],
+      extracted,
+      facts,
+      { shipDateDefaulted: false },
+    );
+    expect(kept).toEqual(["Sender domain doesn't match the customer's.", "No order total is stated."]);
+  });
+
+  it("keeps an unresolved unit note and a SKU note on a confident match", () => {
+    const extracted = [line({ line_number: 10, uom: "PALLET" })];
+    const { facts } = buildLines(extracted, "C-1", items, aliases, null);
+    const kept = filterModelWarnings(
+      [
+        { topic: "unit", line_number: 10, message: "PALLET isn't a stocked unit." },
+        { topic: "sku_match", line_number: 10, message: "Two similar bolts; chose 4410-A." },
+      ],
+      extracted,
+      facts,
+      { shipDateDefaulted: false },
+    );
+    expect(kept).toEqual(["Line 1: PALLET isn't a stocked unit.", "Line 1: Two similar bolts; chose 4410-A."]);
   });
 });

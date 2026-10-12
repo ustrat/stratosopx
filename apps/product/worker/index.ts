@@ -7,6 +7,7 @@ import { processDocument, RetryLater } from "./extract/process";
 import { handleEmail } from "./intake/email";
 import { enforceRetention } from "./intake/retention";
 import { intake } from "./intake/routes";
+import { platform } from "./platform/routes";
 import { api } from "./routes";
 
 type ExtractJob = { tenantId: string; documentId: string };
@@ -23,6 +24,7 @@ app.use("/api/*", async (c, next) => {
 app.use("/api/*", authenticate);
 app.route("/api", api);
 app.route("/api", intake);
+app.route("/api", platform);
 
 app.notFound((c) => c.json({ error: "Not found" }, 404));
 

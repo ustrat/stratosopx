@@ -5,6 +5,8 @@ declare global {
     DEV_USER_EMAIL?: string;
     /** Secret: Claude API key for order extraction (wrangler secret put ANTHROPIC_API_KEY). */
     ANTHROPIC_API_KEY?: string;
+    /** Secret: Cloudflare API token with Email Routing Rules: Edit on stratosopx.com. */
+    CF_EMAIL_ROUTING_TOKEN?: string;
   }
 }
 

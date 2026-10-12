@@ -6,6 +6,7 @@ import { HTTPException } from "hono/http-exception";
 import { requireRole } from "./auth";
 import type { AppEnv } from "./env";
 import { erpFor } from "./erp";
+import { isPlatformAdmin } from "./platform/routes";
 import { approveOrder, rejectOrder, setWritesPaused, type ApproveInput } from "./execution";
 import { getTenant, loadOrder, type OrderRow, type TenantRow } from "./orders";
 
@@ -31,7 +32,7 @@ function criteria(t: TenantRow) {
 api.get("/me", async (c) => {
   const user = c.get("user");
   const tenant = await getTenant(c.env.DB, user.tenantId);
-  return c.json({ user, tenant: { id: tenant.id, name: tenant.name } });
+  return c.json({ user, tenant: { id: tenant.id, name: tenant.name }, isPlatformAdmin: await isPlatformAdmin(c.env.DB, user.email) });
 });
 
 api.get("/overview", async (c) => {

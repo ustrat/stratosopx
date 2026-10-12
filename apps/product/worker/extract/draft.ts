@@ -41,14 +41,24 @@ export function resolveShipDate(raw: string | null, receivedAt: string): { date:
   return { date: fallback, warning: `No valid ship date on the document; set to ${fallback} (14 days after receipt). Check it.` };
 }
 
+// What the server settled for each line, used to drop model warnings it resolved.
+export type LineFacts = {
+  aliasUsed: boolean;
+  unmatched: boolean;
+  lowConfidence: boolean;
+  uomRecognized: boolean;
+  priceDefaulted: boolean;
+};
+
 export function buildLines(
   extracted: Extraction["lines"],
   customerId: string,
   items: Map<string, CatalogItem>,
   aliases: Map<string, string>, // `${customerId}|${customerPart lowercased}` -> sku
   prior: PriorOrder | null,
-): { lines: OrderLine[]; warnings: string[] } {
+): { lines: OrderLine[]; warnings: string[]; facts: LineFacts[] } {
   const warnings: string[] = [];
+  const facts: LineFacts[] = [];
   const lines = extracted.map((x, i): OrderLine => {
     const n = i + 1;
     const part = x.customer_part?.trim() || null;
@@ -62,10 +72,10 @@ export function buildLines(
     const confidence = aliasSku ? 0.99 : modelSku ? Math.min(1, Math.max(0, x.match_confidence)) : 0;
     const qty = Number.isFinite(x.quantity) && x.quantity > 0 ? x.quantity : 0;
     if (qty === 0) warnings.push(`Line ${n}: no valid quantity on the document.`);
-    if (x.note) warnings.push(`Line ${n}: ${x.note}`);
 
     const item = sku ? items.get(sku) : undefined;
     if (!item) {
+      facts.push({ aliasUsed: false, unmatched: true, lowConfidence: true, uomRecognized: false, priceDefaulted: false });
       const uom = x.uom.trim().toUpperCase() || "EA";
       return {
         n,
@@ -84,12 +94,15 @@ export function buildLines(
     }
 
     let uom = normalizeUom(x.uom, item.uomOptions);
+    const uomRecognized = uom !== null;
     if (!uom) {
       warnings.push(`Line ${n}: unit "${x.uom}" isn't used for ${item.sku}; set to ${item.sellUom}. Check the quantity.`);
       uom = item.sellUom;
     }
     const factor = item.uomOptions.find((u) => u.code === uom)?.factor ?? 1;
     let unitPrice = x.unit_price;
+    const priceDefaulted = unitPrice === null || !Number.isFinite(unitPrice);
+    facts.push({ aliasUsed: !!aliasSku, unmatched: false, lowConfidence: confidence < 0.9, uomRecognized, priceDefaulted });
     if (unitPrice === null || !Number.isFinite(unitPrice)) {
       unitPrice = +(item.tierPrice * factor).toFixed(4);
       warnings.push(`Line ${n}: no price on the document; used the contract price.`);
@@ -120,5 +133,43 @@ export function buildLines(
       if (!present.has(sku)) warnings.push(`${sku} was on the original order but is not in this revision.`);
     }
   }
-  return { lines, warnings };
+  return { lines, warnings, facts };
+}
+
+// Keep only the model's warnings the server did not settle itself. Line numbers
+// on the document map to our lines by position of that line in the extraction.
+export function filterModelWarnings(
+  warnings: Extraction["warnings"],
+  extracted: Extraction["lines"],
+  facts: LineFacts[],
+  ctx: { shipDateDefaulted: boolean },
+): string[] {
+  const kept: string[] = [];
+  for (const w of warnings) {
+    const idx = w.line_number === null ? -1 : extracted.findIndex((l) => l.line_number === w.line_number);
+    const f = idx >= 0 ? facts[idx] : undefined;
+    const n = idx + 1;
+    let resolved = false;
+    switch (w.topic) {
+      case "unit":
+        resolved = f ? f.uomRecognized || f.unmatched : facts.filter((x) => !x.unmatched).every((x) => x.uomRecognized);
+        break;
+      case "sku_match":
+        resolved = f ? f.aliasUsed || f.unmatched || f.lowConfidence : true;
+        break;
+      case "customer_match":
+        resolved = true;
+        break;
+      case "price":
+        resolved = !!f?.priceDefaulted;
+        break;
+      case "ship_date":
+        resolved = ctx.shipDateDefaulted;
+        break;
+      default:
+        resolved = false;
+    }
+    if (!resolved) kept.push(f ? `Line ${n}: ${w.message}` : w.message);
+  }
+  return kept;
 }

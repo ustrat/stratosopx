@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import { ControlProvider } from "./components/Controls";
 import { Layout } from "./components/Layout";
 import { Audit } from "./pages/Audit";
+import { Companies } from "./pages/Companies";
 import { Placeholder } from "./pages/common";
 import { ErpSync } from "./pages/ErpSync";
 import { Intake } from "./pages/Intake";
@@ -26,6 +27,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="erp-sync" element={<ErpSync />} />
             <Route path="settings" element={<Settings />} />
             <Route path="audit" element={<Audit />} />
+            <Route path="platform" element={<Companies />} />
             <Route
               path="bids"
               element={<Placeholder title="Bids & RFPs" summary="Go / No-Go decisions, dealbreaker clauses and compliance matrices." />}

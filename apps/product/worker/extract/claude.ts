@@ -22,11 +22,20 @@ export const ExtractionSchema = z.object({
       unit_price: z.number().nullable(),
       matched_sku: z.string().nullable(),
       match_confidence: z.number(),
-      note: z.string().nullable(),
     }),
   ),
-  warnings: z.array(z.string()),
+  // Each note is tagged so the server can drop the ones it resolves itself
+  // (e.g. a unit it mapped or a customer it confirmed).
+  warnings: z.array(
+    z.object({
+      topic: z.enum(["unit", "sku_match", "customer_match", "price", "ship_date", "authenticity", "missing_info", "other"]),
+      line_number: z.number().nullable(),
+      message: z.string(),
+    }),
+  ),
 });
+
+export type WarningTopic = Extraction["warnings"][number]["topic"];
 
 export type Extraction = z.infer<typeof ExtractionSchema>;
 
@@ -48,7 +57,7 @@ Fill the output schema:
 - ship_date: requested ship or delivery date as YYYY-MM-DD, or null if none is stated. Spreadsheet dates may appear as serial numbers (days since 1899-12-30).
 - lines: one entry per ordered line, in document order. quantity and unit_price as numbers, exactly as written for the stated unit; uom as written (EA, CS, BX, ...); unit_price null if not stated. customer_part is the buyer's own part number if present.
 - matched_sku: the catalog SKU for the line, or null. Use the customer's part-number aliases first, then the description. match_confidence from 0 to 1: 0.95+ only when the part number or an exact description matches; lower when you are inferring.
-- note: anything ambiguous about that line. warnings: anything a reviewer should know about the whole document (missing fields, unreadable areas, totals that don't add up).
+- warnings: anything a reviewer should know, one entry per point, with line_number set when it is about a single line (as numbered on the document) and null otherwise. Choose the topic that fits: unit (unit of measure or pack size), sku_match (which catalog item a line is), customer_match (which customer this is), price, ship_date, authenticity (the order may not be genuine, e.g. sender doesn't match the customer), missing_info (a required field is absent or unreadable), other.
 
 Do not invent lines, quantities or prices. If something is unreadable, say so in warnings.`;
 

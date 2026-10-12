@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link } from "react-router";
-import { api, formatDateTime, post, useApi, type ApiError } from "../api";
+import { api, formatBytes, formatDateTime, post, useApi, type ApiError } from "../api";
 import { Icon } from "../components/Icon";
 import type { DocumentRow, IntakeSettings, Me } from "../types";
 import { ErrorCard, Loading } from "./common";
@@ -276,7 +276,7 @@ export function Intake() {
                         <td>
                           <span className="mono">{d.filename}</span>
                           <span className="cell-label">
-                            {d.kind === "bid" ? "Bid package" : "Order"} · {(d.size_bytes / 1e6).toFixed(2)} MB
+                            {d.kind === "bid" ? "Bid package" : "Order"} · {formatBytes(d.size_bytes)}
                             {d.pages ? ` · ${d.pages} pp` : ""} · {d.channel}
                           </span>
                         </td>

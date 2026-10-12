@@ -4,6 +4,7 @@ import type { OrderReview } from "@stratosopx/core/orders";
 export type Me = {
   user: { id: string; email: string; name: string | null; role: "admin" | "approver" | "viewer"; tenantId: string };
   tenant: { id: string; name: string };
+  isPlatformAdmin: boolean;
 };
 
 export type QueueItem = {

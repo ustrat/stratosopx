@@ -1811,3 +1811,19 @@ select.cell-input {
 .extraction-notes .btn {
   width: auto;
 }
+
+.address-input {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-faint);
+  font-size: 12px;
+}
+
+.address-input .text-input {
+  min-height: 40px;
+}
+
+.decision-form .text-input {
+  min-height: 40px;
+}
