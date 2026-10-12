@@ -6,6 +6,10 @@
   // Serve only on the custom domain; keep the public workers.dev and preview URLs off.
   "workers_dev": false,
   "preview_urls": false,
+  "routes": [
+    { "pattern": "stratosopx.com", "custom_domain": true },
+    { "pattern": "www.stratosopx.com", "custom_domain": true }
+  ],
   "assets": {
     "directory": "./out",
     "html_handling": "auto-trailing-slash",
