@@ -67,7 +67,7 @@ export function Layout() {
       <div className="app-main">
         <div className="topbar">
           <span className="muted-label" style={{ fontSize: 14, color: "var(--text-muted)" }}>
-            Order &amp; Bid Command Center
+            {me?.tenant.name ?? ""}
           </span>
           <div className="topbar-user">
             <KillSwitch compact />

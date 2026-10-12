@@ -27,6 +27,7 @@ export function SiteHeader() {
               {l.label}
             </Link>
           ))}
+          <a href="https://app.stratosopx.com">Sign in</a>
           <Link href="/#demo" className="btn btn-primary">
             Request a Demo
           </Link>

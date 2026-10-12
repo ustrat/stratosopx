@@ -1,0 +1,3 @@
+# The product moved to its own app.
+/dashboard https://app.stratosopx.com 301
+/dashboard/* https://app.stratosopx.com 301

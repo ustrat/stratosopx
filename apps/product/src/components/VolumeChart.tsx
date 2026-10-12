@@ -1,12 +1,12 @@
 const X0 = 36;
 const X1 = 404;
 const BASE = 140;
-const MAX = 120;
 
 export function VolumeChart({ values, month }: { values: number[]; month: string }) {
   if (values.length < 2) values = [...values, ...Array(2 - values.length).fill(0)];
   const n = values.length;
-  const max = Math.max(MAX, Math.ceil(Math.max(...values) / 10) * 10);
+  // Scale to the data with ~20% headroom, in steps of 10.
+  const max = Math.max(10, Math.ceil((Math.max(...values) * 1.2) / 10) * 10);
   const pts = values.map((v, i) => [X0 + ((X1 - X0) * i) / (n - 1), BASE - (v / max) * 120] as const);
 
   let line = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;

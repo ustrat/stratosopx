@@ -53,8 +53,8 @@ export default function Home() {
               <a href="#demo" className="btn btn-primary btn-lg">
                 Request a Demo
               </a>
-              <Link href="/dashboard" className="btn btn-ghost btn-lg">
-                Explore the platform <Icon name="arrowRight" strokeWidth={2} />
+              <Link href="/pricing" className="btn btn-ghost btn-lg">
+                See pricing <Icon name="arrowRight" strokeWidth={2} />
               </Link>
             </div>
           </div>
