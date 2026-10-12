@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import { ControlProvider } from "./components/Controls";
 import { Layout } from "./components/Layout";
 import { Audit } from "./pages/Audit";
+import { Catalog } from "./pages/Catalog";
 import { Companies } from "./pages/Companies";
 import { Placeholder } from "./pages/common";
 import { ErpSync } from "./pages/ErpSync";
@@ -24,6 +25,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="review" element={<OrderList mode="open" />} />
             <Route path="review/:id" element={<OrderReview />} />
             <Route path="orders" element={<OrderList mode="all" />} />
+            <Route path="catalog" element={<Catalog />} />
             <Route path="erp-sync" element={<ErpSync />} />
             <Route path="settings" element={<Settings />} />
             <Route path="audit" element={<Audit />} />

@@ -11,9 +11,10 @@ const nav: { to: string; label: string; icon: IconName; end?: boolean; adminOnly
   { to: "/review", label: "Review queue", icon: "shield" },
   { to: "/orders", label: "Orders", icon: "document" },
   { to: "/bids", label: "Bids & RFPs", icon: "building" },
+  { to: "/catalog", label: "Catalog", icon: "layers" },
   { to: "/erp-sync", label: "ERP sync", icon: "database" },
   { to: "/settings", label: "Settings & controls", icon: "settings" },
-  { to: "/audit", label: "Audit log", icon: "layers", adminOnly: true },
+  { to: "/audit", label: "Audit log", icon: "pulse", adminOnly: true },
   { to: "/platform", label: "Companies", icon: "building", platformOnly: true },
 ];
 
