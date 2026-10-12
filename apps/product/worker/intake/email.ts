@@ -31,10 +31,9 @@ export function authenticationPassed(headers: { key: string; value: string }[]) 
 
 export async function handleEmail(message: ForwardableEmailMessage, env: Env) {
   const [localPart, domain] = message.to.toLowerCase().split("@");
-  if (domain !== String(env.INTAKE_DOMAIN)) {
-    message.setReject("Not a StratosOpx intake address");
-    return;
-  }
+  // Mail for other domains (e.g. a zone-wide catch-all) is dropped silently, like
+  // Email Routing's Drop action; bouncing it would send backscatter to forged senders.
+  if (domain !== String(env.INTAKE_DOMAIN)) return;
   const local = localPart!.split("+")[0]!;
   const tenant = await env.DB.prepare("SELECT id FROM tenants WHERE intake_address = ?").bind(local).first<{ id: string }>();
   if (!tenant) {
