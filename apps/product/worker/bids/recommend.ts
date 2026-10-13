@@ -16,7 +16,7 @@ export type Requirement = {
 
 export type Recommendation = { recommendation: "go" | "no_go" | "needs_info"; reason: string };
 
-const ref = (r: Requirement) => `${r.clause ? `${r.clause} ` : ""}${r.requirement}`;
+const ref = (r: Requirement) => `${r.clause ? `${r.clause} ` : ""}${r.requirement.trim().replace(/[.;:,\s]+$/, "")}`;
 
 export function recommend(requirements: Requirement[]): Recommendation {
   const failedDealbreakers = requirements.filter((r) => r.dealbreaker && r.status === "fails");

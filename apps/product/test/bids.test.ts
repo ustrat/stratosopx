@@ -20,6 +20,8 @@ describe("recommend", () => {
     const r = recommend([req({ dealbreaker: true, status: "fails", clause: "§4.2.1" }), req({ status: "unclear" })]);
     expect(r.recommendation).toBe("no_go");
     expect(r.reason).toMatch(/§4\.2\.1 General liability/);
+    expect(recommend([req({ dealbreaker: true, status: "fails", requirement: "Umbrella may not be used." })]).reason).toMatch(/used\.$/);
+    expect(recommend([req({ dealbreaker: true, status: "fails", requirement: "Umbrella may not be used." })]).reason).not.toMatch(/\.\.$/);
   });
 
   it("needs info when a mandatory item or dealbreaker isn't confirmed", () => {
