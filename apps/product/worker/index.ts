@@ -3,6 +3,7 @@ import { HTTPException } from "hono/http-exception";
 import { secureHeaders } from "hono/secure-headers";
 import { authenticate } from "./auth";
 import type { AppEnv } from "./env";
+import { bids } from "./bids/routes";
 import { branding } from "./branding/routes";
 import { catalog } from "./catalog/routes";
 import { processDocument, RetryLater } from "./extract/process";
@@ -29,6 +30,7 @@ app.route("/api", intake);
 app.route("/api", platform);
 app.route("/api", catalog);
 app.route("/api", branding);
+app.route("/api", bids);
 
 app.notFound((c) => c.json({ error: "Not found" }, 404));
 

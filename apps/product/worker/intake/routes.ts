@@ -54,7 +54,7 @@ intake.delete("/intake/senders/:pattern", async (c) => {
 intake.get("/documents", async (c) => {
   const rows = await c.env.DB.prepare(
     `SELECT id, filename, kind, size_bytes, pages, sender, channel, outcome, state, reasons, subject, uploaded_by, received_at, expires_at, r2_key IS NOT NULL AS has_file,
-            extraction_state, extraction_note, order_id
+            extraction_state, extraction_note, order_id, bid_id
      FROM documents WHERE tenant_id = ? ORDER BY received_at DESC LIMIT 100`,
   )
     .bind(c.get("user").tenantId)

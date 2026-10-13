@@ -31,7 +31,7 @@ const criteria = [
 ].map(([label, done]) => ({ label, done }));
 
 // Start clean so the seed can be re-run.
-for (const table of ["intake_senders", "audit_log", "approvals", "order_lines", "orders", "documents", "erp_sales_orders", "erp_customer_parts", "erp_items", "erp_customers", "users", "tenants"]) {
+for (const table of ["bids", "capabilities", "past_projects", "intake_senders", "audit_log", "approvals", "order_lines", "orders", "documents", "erp_sales_orders", "erp_customer_parts", "erp_items", "erp_customers", "users", "tenants"]) {
   sql.push(`DELETE FROM ${table} WHERE ${table === "tenants" ? "id" : "tenant_id"} = ${q(T)};`);
 }
 
@@ -42,6 +42,27 @@ sql.push(
 
 for (const pattern of ["@acme-industrial.example", "@deltafasteners.example", "ap@brightline.example"]) {
   sql.push(`INSERT INTO intake_senders (tenant_id, pattern, added_by) VALUES (${q(T)}, ${q(pattern)}, 'seed');`);
+}
+
+// Bid capability library (matches the sample Riverside Transit Depot RFP).
+const caps = [
+  ["insurance", "General liability", "per occurrence", 2000000, "2027-06-30"],
+  ["insurance", "Umbrella / excess liability", "", 3000000, "2027-06-30"],
+  ["bonding", "Bonding capacity", "single project", 3000000, null],
+  ["safety", "OSHA 30 certified site supervisors", "3 supervisors", null, null],
+  ["license", "Georgia electrical contractor (unrestricted)", "EN-209441", null, "2027-12-31"],
+  ["staffing", "Licensed journeyman electricians", "18 on staff", null, null],
+];
+for (const [kind, name, detail, amount, expires] of caps) {
+  sql.push(`INSERT INTO capabilities (id, tenant_id, kind, name, detail, amount, expires_on) VALUES (${q(crypto.randomUUID())}, ${q(T)}, ${q(kind)}, ${q(name)}, ${q(detail || null)}, ${q(amount)}, ${q(expires)});`);
+}
+const projects = [
+  ["Metro Line 3 Yard", "Metro Atlanta Rapid Transit", 2024, 4200000, "Traction power feeders, duct bank and yard lighting", "won"],
+  ["Eastside Bus Garage", "Gwinnett County Transit", 2025, 1850000, "LED yard and canopy lighting, EV charger rough-in", "won"],
+  ["Airport Parking Deck C", "City of Atlanta", 2023, 2600000, "Fire alarm and emergency lighting", "lost"],
+];
+for (const [name, client, year, value, scope, outcome] of projects) {
+  sql.push(`INSERT INTO past_projects (id, tenant_id, name, client, year, value, scope, outcome) VALUES (${q(crypto.randomUUID())}, ${q(T)}, ${q(name)}, ${q(client)}, ${year}, ${value}, ${q(scope)}, ${q(outcome)});`);
 }
 
 const customers = [

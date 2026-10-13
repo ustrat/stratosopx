@@ -82,6 +82,7 @@ export type DocumentRow = {
   extraction_state: "none" | "queued" | "running" | "done" | "not_order" | "skipped" | "needs_attention" | "failed";
   extraction_note: string | null;
   order_id: string | null;
+  bid_id: string | null;
 };
 
 export type CatalogItem = {
@@ -106,3 +107,45 @@ export type Branding = {
   details: { displayName?: string; address?: string; phone?: string; email?: string; website?: string };
   logoUrl: string | null;
 };
+
+export type BidChoice = "go" | "no_go" | "needs_info";
+
+export type BidSummary = {
+  id: string;
+  title: string;
+  owner: string | null;
+  package_name: string | null;
+  due_date: string | null;
+  recommendation: BidChoice;
+  status: "needs_review" | "decided";
+  decision: BidChoice | null;
+  created_at: string;
+};
+
+export type BidRequirement = {
+  clause: string | null;
+  page: number | null;
+  category: string;
+  requirement: string;
+  mandatory: boolean;
+  status: "meets" | "fails" | "unclear";
+  evidence: string;
+  dealbreaker: boolean;
+};
+
+export type BidDetail = BidSummary & {
+  pages: number | null;
+  summary: string | null;
+  requirements: BidRequirement[];
+  scope_matches: { scope: string; match: number; evidence: string }[];
+  warnings: string[];
+  recommendation_reason: string;
+  decision_note: string | null;
+  decided_by: string | null;
+  decided_at: string | null;
+  document: { filename: string; sender: string | null; channel: string; received_at: string } | null;
+  canDecide: boolean;
+};
+
+export type Capability = { id: string; kind: string; name: string; detail: string | null; amount: number | null; expires_on: string | null };
+export type PastProject = { id: string; name: string; client: string | null; year: number | null; value: number | null; scope: string; outcome: string };

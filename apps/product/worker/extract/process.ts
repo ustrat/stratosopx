@@ -1,4 +1,5 @@
 import { validateOrder, type OrderReview, type Uom } from "@stratosopx/core/orders";
+import { analyzeBid, BidRetryLater } from "../bids/process";
 import { audit, type TenantRow } from "../orders";
 import { extractWithClaude, type Catalog } from "./claude";
 import { convert } from "./convert";
@@ -8,6 +9,7 @@ export class RetryLater extends Error {}
 
 type DocRow = {
   id: string;
+  pages: number | null;
   tenant_id: string;
   filename: string;
   kind: "order" | "bid";
@@ -87,8 +89,11 @@ export async function processDocument(env: Env, tenantId: string, documentId: st
     return;
   }
   if (doc.kind === "bid") {
-    await setState(db, doc, "skipped", "Bid packages are analyzed by the Bid Qualification Agent (coming later).").run();
-    return;
+    const bid = await db.prepare("SELECT id FROM bids WHERE tenant_id = ? AND document_id = ?").bind(tenantId, doc.id).first<{ id: string }>();
+    if (bid) {
+      await setState(db, doc, "done", null, { bid_id: bid.id }).run();
+      return;
+    }
   }
 
   await setState(db, doc, "running", null).run();
@@ -99,7 +104,26 @@ export async function processDocument(env: Env, tenantId: string, documentId: st
     return;
   }
 
-  const converted = convert(doc.filename, new Uint8Array(await obj.arrayBuffer()));
+  const bytes = new Uint8Array(await obj.arrayBuffer());
+
+  if (doc.kind === "bid") {
+    try {
+      const r = await analyzeBid(env, tenant, doc, bytes);
+      await db.batch([
+        setState(db, doc, r.state, r.note, { bid_id: r.bidId ?? null, extraction_usage: r.usage ?? null }),
+        ...(r.state === "not_order" ? [db.prepare("UPDATE documents SET billable = 0 WHERE tenant_id = ? AND id = ?").bind(tenantId, doc.id)] : []),
+      ]);
+    } catch (err) {
+      if (err instanceof BidRetryLater) {
+        await setState(db, doc, "queued", err.message).run();
+        throw new RetryLater(err.message);
+      }
+      throw err;
+    }
+    return;
+  }
+
+  const converted = convert(doc.filename, bytes);
   if (!converted.ok) {
     await setState(db, doc, "needs_attention", converted.reason).run();
     return;

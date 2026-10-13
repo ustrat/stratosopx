@@ -2111,3 +2111,35 @@ select.cell-input {
     border-radius: 0;
   }
 }
+
+/* ---------- Bids ---------- */
+
+.verdict-needs-info h2 {
+  color: var(--warning);
+}
+
+.lib-title {
+  margin: 24px 0 10px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.lib-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-md);
+}
+
+.lib-form .field {
+  flex: 1 1 140px;
+  margin-bottom: 0;
+}
+
+.lib-form .lib-scope {
+  flex: 3 1 280px;
+}

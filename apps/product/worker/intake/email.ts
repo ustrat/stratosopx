@@ -1,5 +1,6 @@
 import { limits } from "@stratosopx/core/ingestion-policy";
 import PostalMime from "postal-mime";
+import { parseIntakeLocal } from "../bids/recommend";
 import { audit } from "../orders";
 import { ingest } from "./ingest";
 
@@ -34,7 +35,8 @@ export async function handleEmail(message: ForwardableEmailMessage, env: Env) {
   // Mail for other domains (e.g. a zone-wide catch-all) is dropped silently, like
   // Email Routing's Drop action; bouncing it would send backscatter to forged senders.
   if (domain !== String(env.INTAKE_DOMAIN)) return;
-  const local = localPart!.split("+")[0]!;
+  // <company>@ is order intake; <company>+bids@ is bid intake (needs Email Routing subaddressing).
+  const { local, kind } = parseIntakeLocal(localPart!);
   const tenant = await env.DB.prepare("SELECT id FROM tenants WHERE intake_address = ?").bind(local).first<{ id: string }>();
   if (!tenant) {
     message.setReject("Unknown StratosOpx address");
@@ -57,7 +59,7 @@ export async function handleEmail(message: ForwardableEmailMessage, env: Env) {
   const attachments = email.attachments.filter((a) => a.disposition !== "inline" || a.filename);
   const common = {
     tenantId: tenant.id,
-    kind: "order" as const,
+    kind,
     channel: "email" as const,
     sender,
     senderAllowed: allowed,

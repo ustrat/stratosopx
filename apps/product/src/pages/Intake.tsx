@@ -30,7 +30,11 @@ function ExtractionCell({ doc, canRetry, onRetry }: { doc: DocumentRow; canRetry
   if (!l) return <span className="desc">—</span>;
   return (
     <>
-      {doc.extraction_state === "done" && doc.order_id ? (
+      {doc.extraction_state === "done" && doc.bid_id ? (
+        <Link to={`/bids/${doc.bid_id}`} className="pill tone-success" style={{ textDecoration: "none" }}>
+          Bid analyzed →
+        </Link>
+      ) : doc.extraction_state === "done" && doc.order_id ? (
         <Link to={`/review/${doc.order_id}`} className={`pill tone-${l.tone}`} style={{ textDecoration: "none" }}>
           {l.label} →
         </Link>
