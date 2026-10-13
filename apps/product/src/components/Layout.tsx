@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { NavLink, Outlet } from "react-router";
 import { useApi } from "../api";
 import type { Branding, Me } from "../types";
@@ -20,7 +21,12 @@ const nav: { to: string; label: string; icon: IconName; end?: boolean; adminOnly
 
 export function Layout() {
   const { data: me, error } = useApi<Me>("/me");
-  const { data: brand } = useApi<Branding>(me ? "/branding" : null);
+  const { data: brand, reload: reloadBrand } = useApi<Branding>(me ? "/branding" : null);
+  // Settings announces logo changes so the top bar updates without a refresh.
+  useEffect(() => {
+    window.addEventListener("branding-updated", reloadBrand);
+    return () => window.removeEventListener("branding-updated", reloadBrand);
+  }, [reloadBrand]);
 
   if (error) {
     return (

@@ -26,11 +26,13 @@ export function BrandingSettings({ isAdmin }: { isAdmin: boolean }) {
     if (fileRef.current) fileRef.current.value = "";
     setBusy(false);
     reload();
+    window.dispatchEvent(new Event("branding-updated"));
   }
 
   async function removeLogo() {
     await api("/branding/logo", { method: "DELETE" }).catch(() => {});
     reload();
+    window.dispatchEvent(new Event("branding-updated"));
   }
 
   async function save(e: FormEvent) {
