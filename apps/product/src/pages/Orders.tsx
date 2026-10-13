@@ -109,6 +109,9 @@ export function OrderReview() {
             )}
           </p>
         </div>
+        <Link to={`/orders/${encodeURIComponent(o.id)}/view`} className="btn btn-ghost">
+          Order view
+        </Link>
       </div>
       {(data.warnings.length > 0 || data.documentId) && (
         <section className="card extraction-notes" aria-labelledby="notes-title">

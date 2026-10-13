@@ -10,6 +10,7 @@ import { Placeholder } from "./pages/common";
 import { ErpSync } from "./pages/ErpSync";
 import { Intake } from "./pages/Intake";
 import { OrderList, OrderReview } from "./pages/Orders";
+import { OrderView } from "./pages/OrderView";
 import { Overview } from "./pages/Overview";
 import { Settings } from "./pages/Settings";
 import "./styles.css";
@@ -25,6 +26,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="review" element={<OrderList mode="open" />} />
             <Route path="review/:id" element={<OrderReview />} />
             <Route path="orders" element={<OrderList mode="all" />} />
+            <Route path="orders/:id/view" element={<OrderView />} />
             <Route path="catalog" element={<Catalog />} />
             <Route path="erp-sync" element={<ErpSync />} />
             <Route path="settings" element={<Settings />} />

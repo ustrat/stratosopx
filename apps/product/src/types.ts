@@ -100,3 +100,9 @@ export type IntakeSettings = {
 };
 
 export type AuditEntry = { actor: string; action: string; target: string | null; detail: Record<string, unknown>; created_at: string };
+
+export type Branding = {
+  name: string;
+  details: { displayName?: string; address?: string; phone?: string; email?: string; website?: string };
+  logoUrl: string | null;
+};

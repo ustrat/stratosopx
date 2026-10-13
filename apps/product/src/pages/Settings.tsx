@@ -1,12 +1,14 @@
 import { tierInfo } from "@stratosopx/core/controls";
 import { useState } from "react";
 import { put, useApi, type ApiError } from "../api";
+import { BrandingSettings } from "../components/BrandingSettings";
 import { KillSwitch } from "../components/Controls";
-import type { Controls } from "../types";
+import type { Controls, Me } from "../types";
 import { ErrorCard, Loading } from "./common";
 
 export function Settings() {
   const { data, error, reload } = useApi<Controls>("/controls");
+  const { data: me } = useApi<Me>("/me");
   const [modeError, setModeError] = useState<string | null>(null);
 
   if (error) return <ErrorCard error={error} />;
@@ -66,6 +68,8 @@ export function Settings() {
               </p>
             )}
           </section>
+
+          <BrandingSettings isAdmin={me?.user.role === "admin"} />
 
           <section className="card" aria-labelledby="matrix-title">
             <div className="card-head">

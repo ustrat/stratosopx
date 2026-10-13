@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from "react-router";
 import { useApi } from "../api";
-import type { Me } from "../types";
+import type { Branding, Me } from "../types";
 import { KillSwitch } from "./Controls";
 import { Icon, type IconName } from "./Icon";
 import { Logo } from "./Logo";
@@ -20,6 +20,7 @@ const nav: { to: string; label: string; icon: IconName; end?: boolean; adminOnly
 
 export function Layout() {
   const { data: me, error } = useApi<Me>("/me");
+  const { data: brand } = useApi<Branding>(me ? "/branding" : null);
 
   if (error) {
     return (
@@ -69,8 +70,9 @@ export function Layout() {
 
       <div className="app-main">
         <div className="topbar">
-          <span className="muted-label" style={{ fontSize: 14, color: "var(--text-muted)" }}>
-            {me?.tenant.name ?? ""}
+          <span className="topbar-company">
+            {brand?.logoUrl && <img src={brand.logoUrl} alt="" className="topbar-logo" />}
+            <span>{me?.tenant.name ?? ""}</span>
           </span>
           <div className="topbar-user">
             <KillSwitch compact />

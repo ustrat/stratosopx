@@ -1827,3 +1827,287 @@ select.cell-input {
 .decision-form .text-input {
   min-height: 40px;
 }
+
+/* ---------- Branding ---------- */
+
+.topbar-company {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.topbar-logo {
+  max-height: 28px;
+  max-width: 120px;
+  object-fit: contain;
+  border-radius: 4px;
+  background: #fff;
+  padding: 2px 4px;
+}
+
+.brand-logo-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.brand-logo-preview {
+  display: grid;
+  place-items: center;
+  width: 200px;
+  height: 90px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-md);
+  background: #fff;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.brand-logo-preview img {
+  max-width: 180px;
+  max-height: 72px;
+  object-fit: contain;
+}
+
+.brand-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0 16px;
+  align-items: end;
+}
+
+/* ---------- Order confirmation (paper) ---------- */
+
+.doc-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  max-width: 900px;
+}
+
+.doc {
+  position: relative;
+  overflow: hidden;
+  max-width: 900px;
+  padding: 48px 52px;
+  border-radius: 8px;
+  background: #fff;
+  color: #111827;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+}
+
+.doc .mono {
+  color: inherit;
+}
+
+.doc-watermark {
+  position: absolute;
+  top: 38%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-24deg);
+  font-size: 120px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: rgba(220, 38, 38, 0.08);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.doc-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid #111827;
+}
+
+.doc-company {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 360px;
+}
+
+.doc-logo {
+  max-width: 220px;
+  max-height: 80px;
+  object-fit: contain;
+  object-position: left;
+  margin-bottom: 8px;
+}
+
+.doc-name {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.doc-name-small {
+  font-weight: 600;
+}
+
+.doc-address {
+  white-space: pre-line;
+  color: #374151;
+}
+
+.doc-contact {
+  color: #4b5563;
+}
+
+.doc-title {
+  text-align: right;
+}
+
+.doc-title h1 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.doc-title dl {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 2px 14px;
+  margin: 12px 0 0;
+  justify-content: end;
+}
+
+.doc-title dt {
+  color: #6b7280;
+}
+
+.doc-title dd {
+  margin: 0;
+  text-align: right;
+  font-weight: 500;
+}
+
+.doc-stamp {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.doc-stamp-ok {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.doc-stamp-draft {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.doc-stamp-void {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.doc-parties {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  padding: 20px 0;
+}
+
+.doc-parties h2 {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.doc-parties p {
+  margin: 0;
+}
+
+.doc-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.doc-table th {
+  padding: 8px 6px;
+  border-bottom: 1px solid #111827;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #374151;
+}
+
+.doc-table td {
+  padding: 8px 6px;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: top;
+}
+
+.doc-table .num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.doc-table tfoot td {
+  border-bottom: 0;
+  border-top: 2px solid #111827;
+  font-weight: 700;
+}
+
+.doc-foot {
+  margin-top: 28px;
+  color: #4b5563;
+}
+
+.doc-foot p {
+  margin: 0 0 4px;
+}
+
+.doc-powered {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+@media print {
+  @page {
+    margin: 14mm;
+  }
+
+  body,
+  .app {
+    background: #fff !important;
+  }
+
+  .sidebar,
+  .topbar,
+  .skip-link,
+  .no-print {
+    display: none !important;
+  }
+
+  .app-main {
+    padding: 0 !important;
+  }
+
+  .doc {
+    max-width: none;
+    padding: 0;
+    box-shadow: none;
+    border-radius: 0;
+  }
+}
